@@ -185,6 +185,21 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         };
     }
 
+    //Get result code from sign in so that we either close the app or go forward
+    //onActivityResult is called before onResume
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Signed In!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED)  {
+                Toast.makeText(this, "Sign in Cancelled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
     //Adapter Interface method override
     @Override
     public void onListItemClick(int clickedItemIndex) {
