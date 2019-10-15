@@ -11,6 +11,7 @@
     <string name="transport_deleted_message">Transport Deleted</string>
     <string name="app_icon_image">Cartoon image of a person driving a car with a dog in the
         back seat</string>
+    <string name="sign_out">Sign out</string>
 
     <!--String Resources list item layout-->
     <string name="textview_to">to</string>

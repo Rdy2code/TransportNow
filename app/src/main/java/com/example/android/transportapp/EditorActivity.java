@@ -573,6 +573,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptions called");
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_editor, menu);
         return true;
