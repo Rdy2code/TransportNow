@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //This block of code ensures that onCreateOptionsMenu is called
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -394,7 +395,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "onCreateOptionsMenu");
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
