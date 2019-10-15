@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Primary color of the app (shown in the app bar)-->
+    <color name="colorPrimary">#673AB7</color>
+
+    <!--Primary dark color of the app (shown in the status bar)-->
+    <color name="colorPrimaryDark">#512DAB</color>
+
+    <!--Primary light color of the app-->
+    <color name="colorPrimaryLight">#D1C4E9</color>
+
+    <!--Light 50-->
+    <color name="colorLight">#EDE7F6</color>
+
+    <!--Accent color of the app (shown in the FAB button, for example)-->
+    <color name="colorAccent">#FF9100</color>
+
+    <!-- Color for an URGENT transport-->
+    <color name="urgent">#F44336</color>
+
+    <!-- Color for a HELP NEEDED transport-->
+    <color name="help_needed">#4CAF50</color>
+
+    <!-- Color for a CANCELLED transport-->
+    <color name="cancelled">#000000</color>
+
+    <!-- Color for a COVERED transport -->
+    <color name="covered">@color/cancelled</color>
+
+    <!--Color for text-->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorIcons">#FFFFFF</color>
+    <color name="textColorSecondary">#757575</color>
+
+    <!--Color for divider-->
+    <color name="colorDivider">#BDBDBD</color>
+
+    <!-- Primary color for the editor -->
+    <color name="editorColorPrimary">#2D3640</color>
+
+    <!-- Primary dark color for the editor -->
+    <color name="editorColorPrimaryDark">#394450</color>
+
+</resources>

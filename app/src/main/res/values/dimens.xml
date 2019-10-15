@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_press_translation_z">12dp</dimen>
+
+    <dimen name="editor_activity_margin">16dp</dimen>
+    <dimen name="button_dimens">48dp</dimen>
+    <dimen name="standard_padding_margin">16dp</dimen>
+
+    <!--AppBar Dimensions-->
+    <dimen name="appbar_layout_height">230dp</dimen>
+    <dimen name="appbar_surface_elevation">4dp</dimen>
+</resources>

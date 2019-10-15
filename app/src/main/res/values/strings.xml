@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">TransportNow</string>
+
+    <!--String Resources MainActivity-->
+    <string name="error_network">Check network connection</string>
+    <string name="empty_view_text">Click on the paw to add a new transport</string>
+    <string name="icon_person_walking_dog">Icon image placeholder of a person walking a dog</string>
+    <string name="error_saving_transport_message">Error with saving transport</string>
+    <string name="transport_saved_message">Transport Saved</string>
+    <string name="transport_updated_message">Transport Updated</string>
+    <string name="transport_deleted_message">Transport Deleted</string>
+    <string name="app_icon_image">Cartoon image of a person driving a car with a dog in the
+        back seat</string>
+
+    <!--String Resources list item layout-->
+    <string name="textview_to">to</string>
+    <string name="textview_from">From</string>
+    <string name="content_description_circle">Color circle designating a transport list item</string>
+
+    <!--tools:text-->
+    <string name="transport_status" translatable="false">Transport Status</string>
+    <string name="origin_city" translatable="false">Bakersfield</string>
+    <string name="destination_city" translatable="false">San Pablo</string>
+    <string name="gender" translatable="false">Male</string>
+    <string name="breed" translatable="false">GSP</string>
+    <string name="id" translatable="false">#00002019</string>
+    <string name="days_since_post" translatable="false">1 day ago</string>
+    <string name="date" translatable="false">August 5, 2019</string>
+    <string name="name" translatable="false">Toby</string>
+
+    <!--String Resources EditorActivity-->
+    <string name="category_transport_status">Status</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_covered">Covered</string>
+    <string name="status_help_needed">Help Needed</string>
+    <string name="category_from">From</string>
+    <string name="category_to">To&#8230;</string>
+    <string name="hint_origin_city">City, State</string>
+    <string name="hint_destination_city">City, State </string>
+    <string name="hint_notes">Notes</string>
+    <string name="category_animal_details">Details</string>
+    <string name="animal_photo">Photo of animal</string>
+    <string name="category_name">Name</string>
+    <string name="category_gender">Gender</string>
+    <string name="gender_unknown">Unknown</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="category_measurement">Weight</string>
+    <string name="hint_weight">Weight</string>
+    <string name="unit_weight">lbs</string>
+    <string name="category_date">Date</string>
+    <string name="map_link">Show Map</string>
+    <string name="edit_transport">Edit Transport</string>
+    <string name="add_transport">Add a New Transport</string>
+    <string name="toast_message_origin_city">Please enter a city and a state for the origin.</string>
+    <string name="toast_message_destination_city">Please enter a city and a state for the destination.</string>
+    <string name="toast_message_date_needed_by">Please select a date for the transport.</string>
+    <string name="delete_dialog_message">Delete Transport?</string>
+    <string name="confirm_delete">Yes, delete</string>
+    <string name="cancel_delete">No, cancel</string>
+    <string name="unsaved_changes_dialog_message">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="photo_not_found_message">Photo not found on your device</string>
+    <string name="action_share">Floating Action Button</string>
+    <string name="transport_id_label">Transport ID: %1$s</string>
+
+    <!--String resources for email sharing of transport information-->
+    <string name="email_subject">NorCal GSP Request for transport: %1$s (%2$s) </string>
+    <string name="email_body_text">Hello GSP Transport Volunteers:\n\n%1$s needs a ride from %2$s to %3$s on %4$s.
+        \n\nIf you can help with any part of this trip please let me know by reply to this email.
+        Please include your mobile telephone number.\n\nThank you everyone.\n\n
+
+        Point A:\n
+        %2$s \n\n
+
+        Point B:\n
+        %3$s \n\n
+
+        Transport Coordinator\n
+        NorCal GSP Rescue\n
+        www.norcalgsprescue.org
+
+    </string>
+
+
+
+    <!--String Resources Menu Editor-->
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+
+</resources>
