@@ -506,6 +506,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         }
 
         if (mModeEdit) {
+            Log.d(TAG, "we are in edit mode");
             //We are in edit mode
             Transport transportObjectEditMode = new Transport(
                     mStatus,

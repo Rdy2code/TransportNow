@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private String mUsername;
 
     //SwipeRefreshLayout
-    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mSwipeRefreshLayout;
     private int mSwipedPosition;
     private boolean mOnSwipe;
 
@@ -140,25 +139,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         if (savedInstanceState == null) {
             Log.d(TAG, "savedInstanceState null");
         }
-
-        //SwipeRefresh Layout Listener callback when UI is pulled down
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public int hashCode() {
-                return super.hashCode();
-            }
-
-            @Override
-            public void onRefresh() {
-                Log.d(TAG, "refreshing layout");
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
 
         //Initialize FirebaseAuthStateListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -224,13 +204,15 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        mTransports = new ArrayList<Transport>();
+        mRecyclerView.setHasFixedSize(true);
 
         //Initialize the adapter and register the RecyclerView with the adapter
         mAdapter = new TransportAdapter(
                 MainActivity.this, mTransports, MainActivity.this);
+
+        mTransports = new ArrayList<Transport>();
+
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
 
         setItemTouchHelper();
     }
@@ -451,6 +433,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //not needed when the activity is created.
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.d(TAG, "onChildAdded called");
 
                     //Add the Uid of each node in the dbase to the transportId child of the node
                     //Below this ID is added to the transportID field of the Transport object
@@ -472,21 +455,23 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
                     mTransports.add(transport);
+                    Log.d(TAG, "gender in main is " + mTransports.get(0).getGender());
 
                     mAdapter.setTransportData(mTransports);
+
+                    Log.d(TAG, "size of list is" + mTransports.size());
                 }
 
                 //Called when the contents of an existing transport is changed
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildChanged called");
 
                     if (mEditModeOn) {
-                        Log.d(TAG, "conditional in onChildChanged called");
                         //Create a new Transport object with the updated information
                         Transport transport = dataSnapshot.getValue(Transport.class);
                         //Replace the old transport object with the new one
                         mTransports.set(mClickedItemIndex, transport);
+                        Log.d(TAG, "onChildChanged called");
                         Log.d(TAG, "clickedItem is " + mClickedItemIndex);
                         //Notify the adapter that the list of transports has been updated
                         mAdapter.setTransportData(mTransports);

@@ -64,7 +64,6 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
 
         //Get a Transport object from the ArrayList<Transport>
         Transport transport = mTransports.get(position);
-        Log.d("TransportAdapter", "originCity is first " + mTransports.get(position).getOriginCity() + "");
 
         //Trim the state from the strings for origin and destination locales
         if (transport.getOriginCity() != null) {
@@ -74,8 +73,6 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
             } else {
                 mSubstringOriginCity = transport.getOriginCity();
             }
-
-            Log.d("TransportAdapter", "substring is " + mSubstringOriginCity);
         }
 
         if (transport.getDestinationCity() != null) {
@@ -115,7 +112,6 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
     public void setTransportData (ArrayList<Transport> transports) {
         mTransports = transports;
         notifyDataSetChanged();
-        Log.d("TransportAdapter", "TransportAdapter setTransportData called");
     }
 
     class TransportViewHolder extends RecyclerView.ViewHolder implements
