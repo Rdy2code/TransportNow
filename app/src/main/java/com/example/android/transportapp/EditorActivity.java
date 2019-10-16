@@ -311,7 +311,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                 if (mTransport.getPhotoUrl() != null) {
                     Log.d(TAG, "Url is " + mTransport.getPhotoUrl());
                     mPhotoUri = Uri.parse(mTransport.getPhotoUrl());
-                    Log.d(TAG, "the retrieved mPhotoUri is " + mPhotoUri);
                     //loadPhoto(mPhotoUri);
                     loadPhoto(mPhotoUri);
                 }

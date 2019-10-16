@@ -24,17 +24,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -136,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         //Check the connection to the network
         checkNetworkConnection();
 
-        if (savedInstanceState == null) {
-            Log.d(TAG, "savedInstanceState null");
-        }
-
         //Initialize FirebaseAuthStateListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
 
@@ -172,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 }
             }
         };
+
+        mEmptyView.setVisibility(View.VISIBLE);
     }
 
     //Get result code from sign in so that we either close the app or go forward
@@ -342,11 +338,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     for (int i = 0; i < permissions.length; i++){
                         isPerpermissionForAllGranted= grantResults[i] == PackageManager.PERMISSION_GRANTED;
                     }
-
-                    Log.e("value", "Permission Granted");
                 } else {
                     isPerpermissionForAllGranted=true;
-                    Log.e("value", "Permission Denied");
                 }
                 if(isPerpermissionForAllGranted){
                     // do your stuff here
@@ -356,10 +349,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     }
 
     @Override
-    protected void onPause() {
-        //Activity is no longer in the foreground
-        Log.d(TAG, "onPause called");
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy called");
+
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
@@ -368,10 +361,26 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     }
 
     @Override
+    protected void onPause() {
+        //Activity is no longer in the foreground
+        Log.d(TAG, "onPause called");
+        super.onPause();
+//        if (mAuthStateListener != null) {
+//            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+//        }
+//        mTransports.clear();
+//        detachDatabaseReadListener();
+    }
+
+    @Override
     protected void onResume() {
         //Activity is in the foreground
         Log.d(TAG, "onResume called");
         super.onResume();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -404,7 +413,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         //Set status of network connection
         mIsConnected = (activeNetwork != null && activeNetwork.isConnected());
-        Log.d(TAG, "mIsConnected is " + mIsConnected);
     }
 
     //Attach the database read listener. This method called when onAuthStateChanged called
@@ -455,11 +463,15 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
                     mTransports.add(transport);
-                    Log.d(TAG, "gender in main is " + mTransports.get(0).getGender());
+                    mOnChildAddedCount++;
+
+                    if (mOnChildAddedCount >= 0) {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mEmptyView.setVisibility(View.INVISIBLE);
+                    }
 
                     mAdapter.setTransportData(mTransports);
-
-                    Log.d(TAG, "size of list is" + mTransports.size());
                 }
 
                 //Called when the contents of an existing transport is changed
@@ -469,6 +481,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     if (mEditModeOn) {
                         //Create a new Transport object with the updated information
                         Transport transport = dataSnapshot.getValue(Transport.class);
+                        Log.d(TAG, "the updated name is " + transport.getName());
                         //Replace the old transport object with the new one
                         mTransports.set(mClickedItemIndex, transport);
                         Log.d(TAG, "onChildChanged called");
