@@ -87,24 +87,12 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/network_error_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="16dp"
-        android:text="@string/error_network"
-        android:textSize="16sp"
-        android:visibility="invisible"
-        tools:text="Network Error" />
-
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_below="@id/network_error_tv"
-        android:layout_gravity="bottom"
-        android:visibility="invisible" />
+        android:layout_gravity="center"/>
 
     <androidx.recyclerview.widget.RecyclerView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

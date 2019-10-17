@@ -2,7 +2,6 @@
     <string name="app_name">TransportNow</string>
 
     <!--String Resources MainActivity-->
-    <string name="error_network">Check network connection</string>
     <string name="empty_view_text">Click on the paw to add a new transport</string>
     <string name="icon_person_walking_dog">Icon image placeholder of a person walking a dog</string>
     <string name="error_saving_transport_message">Error with saving transport</string>

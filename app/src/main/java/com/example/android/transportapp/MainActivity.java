@@ -43,6 +43,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         //Before the Firebase Database is read by the app, the initial child count is set to -1
         mOnChildAddedCount = -1;
 
-        //Check the connection to the network
+        //Check the connection to the network-backup method
         checkNetworkConnection();
 
         //Initialize FirebaseAuthStateListener
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         };
 
         mEmptyView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     //Get result code from sign in so that we either close the app or go forward
@@ -548,6 +550,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             //Attach the listener to the database reference we want to listen to
             mTransportsDatabaseReference.addChildEventListener(mChildEventListener);
         }
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private void detachDatabaseReadListener () {
