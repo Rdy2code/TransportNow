@@ -224,7 +224,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         mMapLinkTextView.setOnClickListener(v -> {
             String originCity = mOriginCityTextView.getText().toString();
             String destinationCity = mDestinationCityTextView.getText().toString();
-            Log.d(TAG, "map link called");
 
             final String BASE_URI = "geo:";
 
@@ -251,10 +250,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
             Uri.Builder builder = Uri.parse(BASE_URI + lat + "," + lng).buildUpon();
             Uri uri = builder.build();
-
-            Log.d(TAG, lat + "");
-            Log.d(TAG, Double.toString(lat));
-            Log.d(TAG, "my new uri is: " + uri.toString());
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(uri);

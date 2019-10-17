@@ -53,8 +53,8 @@
     <string name="map_link">Show Map</string>
     <string name="edit_transport">Edit Transport</string>
     <string name="add_transport">Add a New Transport</string>
-    <string name="toast_message_origin_city">Please enter a city and a state for the origin.</string>
-    <string name="toast_message_destination_city">Please enter a city and a state for the destination.</string>
+    <string name="toast_message_origin_city">Please enter City, State for the origin.</string>
+    <string name="toast_message_destination_city">Please enter City, State for the destination.</string>
     <string name="toast_message_date_needed_by">Please select a date for the transport.</string>
     <string name="delete_dialog_message">Delete Transport?</string>
     <string name="confirm_delete">Yes, delete</string>

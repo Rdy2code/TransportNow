@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         //Get a reference to the section of the database where Transports are stored
         mTransportsDatabaseReference = mFirebaseDatabase.getReference().child("transports");
+        mTransportsDatabaseReference.keepSynced(true);
 
         mEditModeOn = false;
 
@@ -189,8 +190,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     @Override
     public void onListItemClick(int clickedItemIndex) {
         mClickedItemIndex = clickedItemIndex;
-        Log.d(TAG, "clicked index is " + mClickedItemIndex);
-        Log.d(TAG, mTransports.get(mClickedItemIndex).getOriginCity());
         mOnChildAddedCount = -1;
         Intent openEditorActivity = new Intent(this, EditorActivity.class);
         openEditorActivity.putExtra("Transport", mTransports.get(clickedItemIndex));
@@ -250,13 +249,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //Get a reference to the deleted Transport object from the ArrayList of transports
                 Transport transportToDelete = mTransports.get(mSwipedPosition);
 
-                Log.d(TAG, "onSwipe activated" + transportToDelete.getTransportId());
-
                 //Delete the transport from the Firebase
                 String path = transportToDelete.getTransportId();
-                Log.d(TAG, "transport ID is " + path);
                 mTransportsDatabaseReference.child(path).removeValue();
-
                 mOnSwipe = true;
             }
 
@@ -403,6 +398,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     }
 
     //HELPER METHODS
+
+    //Internet check-backup method if needed
     private void checkNetworkConnection() {
         //Create an instance of a ConnectivityManager
         ConnectivityManager cm = (ConnectivityManager)
@@ -481,11 +478,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     if (mEditModeOn) {
                         //Create a new Transport object with the updated information
                         Transport transport = dataSnapshot.getValue(Transport.class);
-                        Log.d(TAG, "the updated name is " + transport.getName());
                         //Replace the old transport object with the new one
                         mTransports.set(mClickedItemIndex, transport);
-                        Log.d(TAG, "onChildChanged called");
-                        Log.d(TAG, "clickedItem is " + mClickedItemIndex);
                         //Notify the adapter that the list of transports has been updated
                         mAdapter.setTransportData(mTransports);
 
@@ -507,20 +501,15 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                             getString(R.string.transport_deleted_message),
                             Toast.LENGTH_SHORT).show();
 
-                    Log.d(TAG, "onChildRemoved called");
-                    Log.d(TAG, "swiped position is " + mSwipedPosition);
-
                     //User has removed a transport from the EditorActivity screen, so update the list
                     //of transports and notify the adapter.
 
                     //Deleting from the MainActivity
                     if (mOnSwipe) {
-                        Log.d(TAG, "if statement entered");
                         mTransports.remove(mTransports.get(mSwipedPosition));
                         mAdapter.setTransportData(mTransports);
                         //Reset the boolean so this control flow is closed after each swipe
                         if (mTransports.size() == 0) {
-                            Log.d(TAG, "mTransports = 0");
                             mRecyclerView.setVisibility(View.INVISIBLE);
                             mEmptyView.setVisibility(View.VISIBLE);
                         }
@@ -529,7 +518,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     //Deleting from the EditorActivity
                     if (mEditModeOn) {
-                        Log.d(TAG, "mEditModeOn is " + mEditModeOn);
                         mTransports.remove(mTransports.get(mClickedItemIndex));
                         mAdapter.setTransportData(mTransports);
                         mEditModeOn = false;
@@ -543,7 +531,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //Called if one of the transports changes position in the list
                 @Override
                 public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "onChildMoved called");
                 }
 
                 //Called when an error occurs when user tries to make changes
