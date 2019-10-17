@@ -188,9 +188,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         mLoadPhotoTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loadPhotoIntent = new Intent (Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(loadPhotoIntent, 0);
+                getPhoto();
             }
         });
 
@@ -309,7 +307,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                 String weight = mTransport.getWeight();
 
                 if (mTransport.getPhotoUrl() != null) {
-                    Log.d(TAG, "Url is " + mTransport.getPhotoUrl());
                     mPhotoUri = Uri.parse(mTransport.getPhotoUrl());
                     //loadPhoto(mPhotoUri);
                     loadPhoto(mPhotoUri);
@@ -504,8 +501,11 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             return;
         }
 
+        if (mPhotoUri == null) {
+            mPhotoUri = Uri.parse("");
+        }
+
         if (mModeEdit) {
-            Log.d(TAG, "we are in edit mode");
             //We are in edit mode
             Transport transportObjectEditMode = new Transport(
                     mStatus,
@@ -521,10 +521,14 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     weight
             );
 
-            //Set the mEditModeOn boolean to true in the MainActivity
-            MainActivity.setEditModeOn(true);
-            mTransportsDatabaseReference.child(mTransport.getTransportId()).setValue(transportObjectEditMode);
-            Log.d(TAG, "setValue called");
+            if (fieldChecker(mPhotoUri.toString())) {
+                askUserAboutPhotoDialog();
+            } else {
+                //Set the mEditModeOn boolean to true in the MainActivity
+                MainActivity.setEditModeOn(true);
+                mTransportsDatabaseReference.child(mTransport.getTransportId()).setValue(transportObjectEditMode);
+                finish();
+            }
 
         } else {
             //We are in save a new transport mode
@@ -541,6 +545,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     mPhotoUri.toString(),
                     note,
                     weight);
+
             //Since onChildChanged gets called when onChildAdded calls setValue() to update the
             //transportId in the Firebase for this new transport, we need to toggle the boolean
             //to control the flow of logic in the MainActivity callbacks
@@ -550,13 +555,18 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             //This call triggers the onChildAdded() callback, where we can retrieve the Uid for this node
             //In onChildAdded(), the transportId field is then set to the Uid, so that we can later
             //use this Id to delete the node from the Firebase in the onSwiped() method.
-            mTransportsDatabaseReference.push().setValue(transportObjectSaveMode);
-            Toast.makeText(
-                    EditorActivity.this,
-                    getString(R.string.transport_saved_message),
-                    Toast.LENGTH_SHORT).show();
+
+            if (fieldChecker(mPhotoUri.toString())) {
+                askUserAboutPhotoDialog();
+            } else {
+                mTransportsDatabaseReference.push().setValue(transportObjectSaveMode);
+                Toast.makeText(
+                        EditorActivity.this,
+                        getString(R.string.transport_saved_message),
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
-        finish();
     }
 
     private void deleteTransport() {
@@ -665,6 +675,34 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         alertDialog.show();
     }
 
+    //DIALOG BOXES
+    private void askUserAboutPhotoDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //Message to user displayed in the dialog box: 'Delete this transport?'
+        builder.setMessage(R.string.photo_dialog);
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                getPhoto();
+            }
+        });
+
+        builder.setNegativeButton(R.string.no_thanks, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                mPhotoUri = Uri.parse("none");
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void warnUnsavedChangesDialog (DialogInterface.OnClickListener discardListenerDialog) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.unsaved_changes_dialog_message);
@@ -709,25 +747,19 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult called");
-
         if (resultCode == RESULT_OK) {
             mPhotoUri = data.getData();
-            Log.d(TAG, "result code okay");
-            Log.d(TAG, "the photo uri from the transport object is " + mPhotoUri.toString());
         }
         loadPhoto(mPhotoUri);
     }
 
     //After many hours, found that Picasso could not load a Uri from Firebase, but Glide can.
     private void loadPhoto (Uri photoUri) {
-        Log.d(TAG, "photoUri is " + photoUri);
         Glide.with(this).load(photoUri).into(mPhotoImageView);
     }
 
     private void isChecked (boolean on) {
         if (on) {
-            Log.d(TAG, "switched on");
             mSwitchUrgency.setTextColor(getColor(R.color.urgent));
             mIsTransportUrgent = true;
 
@@ -735,5 +767,11 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             mSwitchUrgency.setTextColor(getColor(R.color.textColorPrimary));
             mIsTransportUrgent = false;
         }
+    }
+
+    private void getPhoto() {
+        Intent loadPhotoIntent = new Intent (Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(loadPhotoIntent, 0);
     }
 }

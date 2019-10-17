@@ -62,6 +62,9 @@
     <string name="unsaved_changes_dialog_message">Discard your changes and quit editing?</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep Editing</string>
+    <string name="photo_dialog">Include a photo? Select a photo from the Gallery if desired.</string>
+    <string name="no_thanks">No, thanks</string>
+    <string name="yes">Yes</string>
     <string name="photo_not_found_message">Photo not found on your device</string>
     <string name="action_share">Floating Action Button</string>
     <string name="transport_id_label">Transport ID: %1$s</string>
