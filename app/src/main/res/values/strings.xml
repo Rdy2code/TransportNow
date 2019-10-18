@@ -96,5 +96,10 @@
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
     <string name="action_remove_photo">Remove photo</string>
+    <string name="action_show_covered">Showing covered transports</string>
+    <string name="action_show_cancelled">Showing cancelled transports</string>
+    <string name="action_help_needed">Showing help needed transports</string>
+    <string name="action_all">Showing all transports</string>
+
 
 </resources>

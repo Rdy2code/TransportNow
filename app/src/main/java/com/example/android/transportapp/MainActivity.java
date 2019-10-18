@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.sort_by_covered:
-                Toast.makeText(this, "Showing covered transports", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.action_show_covered), Toast.LENGTH_SHORT).show();
                 for (Transport transport : mTransports) {
                     if (!transport.getStatus().equals("Covered")) {
                         mTransports.remove(transport);
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 mAdapter.setTransportData(mTransports);
                 return true;
             case R.id.sort_by_cancelled:
-                Toast.makeText(this, "Showing cancelled transports", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.action_show_cancelled), Toast.LENGTH_SHORT).show();
                 for (Transport transport : mTransports) {
                     if (!transport.getStatus().equals("Cancelled")) {
                         mTransports.remove(transport);
@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 mAdapter.setTransportData(mTransports);
                 return true;
             case R.id.sort_by_help_needed:
-                Toast.makeText(this, "Showing help needed transports", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.action_help_needed), Toast.LENGTH_SHORT).show();
                 for (Transport transport : mTransports) {
                     if (!transport.getStatus().equals("Help needed")) {
                         mTransports.remove(transport);
@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 mAdapter.setTransportData(mTransports);
                 return true;
             case R.id.show_all:
-                Toast.makeText(this, "Showing all transports", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.action_all), Toast.LENGTH_SHORT).show();
                 detachDatabaseReadListener();
                 attachDatabaseReadListener();
                 return true;
