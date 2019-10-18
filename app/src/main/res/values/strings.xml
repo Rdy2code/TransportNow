@@ -95,5 +95,6 @@
     <!--String Resources Menu Editor-->
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
+    <string name="action_remove_photo">Remove photo</string>
 
 </resources>

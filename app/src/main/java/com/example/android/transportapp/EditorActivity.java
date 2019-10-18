@@ -593,6 +593,9 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
                 return true;
+            case R.id.action_remove_photo:
+                removePhoto();
+                return true;
             case android.R.id.home:
                 if (!mTransportChanged) {
                     finish();
@@ -768,5 +771,11 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         Intent loadPhotoIntent = new Intent (Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(loadPhotoIntent, 0);
+    }
+
+    private void removePhoto() {
+        mPhotoImageView.setImageDrawable(null);
+        mPhotoUri = null;
+        loadPhoto(mPhotoUri);
     }
 }
