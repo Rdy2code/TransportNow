@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
@@ -87,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     @BindView(R.id.recyclerview_transports) RecyclerView mRecyclerView;
     @BindView(R.id.empty_view) LinearLayout mEmptyView;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.network_error_tv) TextView mErrorMessageTextView;
 
     //FAB member variables
     @BindView(R.id.fab) FloatingActionButton mFab;
@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Monitor the connection to the Firebase Database and notify the user when connection is lost
+        //or regained
+        setUpEventListener();
 
         //This block of code ensures that onCreateOptionsMenu is called
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -394,6 +398,38 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 return true;
+            case R.id.sort_by_covered:
+                Toast.makeText(this, "Showing covered transports", Toast.LENGTH_SHORT).show();
+                for (Transport transport : mTransports) {
+                    if (!transport.getStatus().equals("Covered")) {
+                        mTransports.remove(transport);
+                    }
+                }
+                mAdapter.setTransportData(mTransports);
+                return true;
+            case R.id.sort_by_cancelled:
+                Toast.makeText(this, "Showing cancelled transports", Toast.LENGTH_SHORT).show();
+                for (Transport transport : mTransports) {
+                    if (!transport.getStatus().equals("Cancelled")) {
+                        mTransports.remove(transport);
+                    }
+                }
+                mAdapter.setTransportData(mTransports);
+                return true;
+            case R.id.sort_by_help_needed:
+                Toast.makeText(this, "Showing help needed transports", Toast.LENGTH_SHORT).show();
+                for (Transport transport : mTransports) {
+                    if (!transport.getStatus().equals("Help needed")) {
+                        mTransports.remove(transport);
+                    }
+                }
+                mAdapter.setTransportData(mTransports);
+                return true;
+            case R.id.show_all:
+                Toast.makeText(this, "Showing all transports", Toast.LENGTH_SHORT).show();
+                detachDatabaseReadListener();
+                attachDatabaseReadListener();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -432,7 +468,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private void attachDatabaseReadListener () {
 
         if (mChildEventListener == null) {
-            Log.d(TAG, "mChildEventListener is null");
             mChildEventListener = new ChildEventListener() {
 
                 //Called whenever a new transport is inserted into the "transports" node
@@ -558,5 +593,38 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             mTransportsDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
+    }
+
+    //Internet connection monitoring. Delay to provide time for internet connection to be established
+    //at launch
+    private void setUpEventListener() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 2000ms
+                DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                connectedRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean connected = snapshot.getValue(Boolean.class);
+                        if (connected) {
+                            Toast.makeText(getApplicationContext(), "You are connected to TransportNow",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "You have lost internet connection. You" +
+                                            " may continue to work, but changes won't be synced with the cloud" +
+                                            " until you reconnect.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.w("TransportApp", "Listener was cancelled");
+                    }
+                });
+            }
+        }, 4000);
     }
 }

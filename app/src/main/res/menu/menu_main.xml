@@ -2,10 +2,38 @@
 
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
     <item
         android:id="@+id/sign_out_menu"
         android:title="@string/sign_out"
+        app:showAsAction="never"
+        android:orderInCategory="1"/>
+
+    <item
+        android:id="@+id/sort_by_covered"
+        android:orderInCategory="2"
+        android:title="@string/covered"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_cancelled"
+        android:orderInCategory="3"
+        android:title="@string/cancelled"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_help_needed"
+        android:orderInCategory="4"
+        android:title="@string/help_needed"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/show_all"
+        android:orderInCategory="5"
+        android:title="@string/show_all"
+        app:showAsAction="never"/>
+
 </menu>

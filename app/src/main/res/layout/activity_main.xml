@@ -91,7 +91,7 @@
         android:id="@+id/progress_bar"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:layout_below="@id/network_error_tv"
+        android:layout_below="@id/empty_title_text"
         android:layout_gravity="center"/>
 
     <androidx.recyclerview.widget.RecyclerView

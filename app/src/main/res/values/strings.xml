@@ -11,6 +11,10 @@
     <string name="app_icon_image">Cartoon image of a person driving a car with a dog in the
         back seat</string>
     <string name="sign_out">Sign out</string>
+    <string name="covered">Covered</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="help_needed">Help Needed</string>
+    <string name="show_all">Show All</string>
 
     <!--String Resources list item layout-->
     <string name="textview_to">to</string>
@@ -32,7 +36,7 @@
     <string name="category_transport_status">Status</string>
     <string name="status_cancelled">Cancelled</string>
     <string name="status_covered">Covered</string>
-    <string name="status_help_needed">Help Needed</string>
+    <string name="status_help_needed">Help needed</string>
     <string name="category_from">From</string>
     <string name="category_to">To&#8230;</string>
     <string name="hint_origin_city">City, State</string>

@@ -19,35 +19,7 @@ public class TransportApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //Enable offline work with locally cached data
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 2000ms
-                DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-                connectedRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean connected = snapshot.getValue(Boolean.class);
-                        if (connected) {
-                            Toast.makeText(getApplicationContext(), "You are connected to the cloud",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "You have lost internet connection. You" +
-                                            " may continue to work, but changes won't be synced with the cloud" +
-                                            " until you reconnect.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.w("TransportApp", "Listener was cancelled");
-                    }
-                });
-            }
-        }, 1000);
     }
 }
