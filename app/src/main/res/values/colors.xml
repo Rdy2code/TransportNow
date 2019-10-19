@@ -4,6 +4,10 @@
     <!--Primary color of the app (shown in the app bar)-->
     <color name="colorPrimary">#673AB7</color>
 
+    <color name="color_primary_mid_200">#B39DDB</color>
+
+    <color name="color_primary_light_100">#D1C4E9</color>
+
     <!--Primary dark color of the app (shown in the status bar)-->
     <color name="colorPrimaryDark">#512DAB</color>
 

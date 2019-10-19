@@ -91,7 +91,6 @@
     </string>
 
 
-
     <!--String Resources Menu Editor-->
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
@@ -100,6 +99,8 @@
     <string name="action_show_cancelled">Showing cancelled transports</string>
     <string name="action_help_needed">Showing help needed transports</string>
     <string name="action_all">Showing all transports</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>
