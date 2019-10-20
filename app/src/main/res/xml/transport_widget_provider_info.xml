@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/transport_widget_provider"
     android:initialLayout="@layout/transport_widget_provider"
-    android:minWidth="100dp"
+    android:minWidth="200dp"
     android:minHeight="60dp"
     android:previewImage="@drawable/launch_icon"
     android:resizeMode="horizontal|vertical"

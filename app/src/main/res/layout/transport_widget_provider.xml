@@ -3,30 +3,34 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/widget_margin"
-    android:background="@color/colorPrimaryLight"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/widget_image"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_weight="1"
         android:contentDescription="@string/app_icon_image"
         android:src="@drawable/launch_icon"
-        android:layout_margin="@dimen/standard_padding_margin"
-        android:layout_gravity="center">
+        android:layout_margin="8dp"
+        android:layout_gravity="left|center_vertical"
+        android:elevation="6dp"
+        android:background="@drawable/image_border"
+        android:padding="5dp"
+        android:cropToPadding="true">
     </ImageView>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_padding_margin"
         android:orientation="vertical"
         android:layout_weight="2"
-        android:layout_gravity="center">
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginRight="8dp">
 
         <TextView
             android:id="@+id/appwidget_text_title"
@@ -34,17 +38,18 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/appwidget_text"
             android:text="Request for Transport"
-            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-            android:layout_gravity="center"/>
+            android:textSize="22sp"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/appwidget_text_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/widget_margin"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            tools:text="Aug. 12, 2019">
+            android:textSize="18sp"
+            tools:text="Aug. 12, 2019"
+            android:textColor="@android:color/white">
         </TextView>
 
         <TextView
@@ -52,8 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            tools:text="Modesto to Sacramento">
+            android:textSize="18sp"
+            tools:text="Modesto to Sacramento"
+            android:textColor="@android:color/white">
         </TextView>
     </LinearLayout>
 </LinearLayout>
