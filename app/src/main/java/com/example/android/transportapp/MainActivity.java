@@ -98,8 +98,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TransportRequestService.getLatestTransport(this);
-
         //Monitor the connection to the Firebase Database and notify the user when connection is lost
         //or regained
         setUpEventListener();
@@ -529,6 +527,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                                 Toast.LENGTH_SHORT).show();
                         mEditModeOn = false;
                     }
+
+                    TransportRequestService.getLatestTransport(getApplicationContext());
                 }
 
                 //Called when an existing transport is deleted

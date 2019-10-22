@@ -1,6 +1,8 @@
 package com.example.android.transportapp.utils;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.android.transportapp.Transport;
+import com.example.android.transportapp.TransportWidgetProvider;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,14 +56,14 @@ public class TransportRequestService extends IntentService {
 
     //Get the latest transport
     private void handleActionGetLatestTransport() {
-        Log.d("Service", "service called");
         //Firebase Realtime Database setup: Main Access point
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         //Get a reference to the section of the database where Transports are stored
         mTransportsDatabaseReference = mFirebaseDatabase.getReference().child("transports");
 
-        mTransports = new ArrayList<>();
+        mTransports = new ArrayList<Transport>();
         mTimestamps = new ArrayList<>();
+        mMostRecentTransport = new Transport();
 
         mChildEventListener = new ChildEventListener() {
 
@@ -70,14 +73,12 @@ public class TransportRequestService extends IntentService {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Transport transport = dataSnapshot.getValue(Transport.class);
                 mTransports.add(transport);
-                Log.d("TransportService", transport.getDateNeededBy());
-                Log.d("TransportService", transport.getTimestampLong() + "");
                 long index = 0;
                 long currentTime = transport.getTimestampLong();
                 int a = 0;
-                mMostRecentTransport = mTransports.get(a);
 
                 mTimestamps.add(currentTime);
+
                 for (int i = 0; i < mTimestamps.size(); i++) {
                     if (mTimestamps.get(i) > index) {
                         index = mTimestamps.get(i);
@@ -85,8 +86,8 @@ public class TransportRequestService extends IntentService {
                     }
                 }
 
-                Log.d ("TransportService", "the most recent transport is " +
-                        mTransports.get(a).getDateNeededBy());
+                mMostRecentTransport = mTransports.get(a);
+                sendToUpdateAppWidgets(mMostRecentTransport);
             }
 
             @Override
@@ -111,5 +112,21 @@ public class TransportRequestService extends IntentService {
         };
 
         mTransportsDatabaseReference.addChildEventListener(mChildEventListener);
+    }
+
+    private void sendToUpdateAppWidgets(Transport recentTransport) {
+        String dateNeededBy = recentTransport.getDateNeededBy();
+        String originCity = recentTransport.getOriginCity();
+        String destinationCity = recentTransport.getDestinationCity();
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, TransportWidgetProvider.class));
+        //Update all widgets
+        TransportWidgetProvider.updateTransportWidgets(this,
+                appWidgetManager,
+                appWidgetIds,
+                dateNeededBy,
+                originCity,
+                destinationCity);
     }
 }

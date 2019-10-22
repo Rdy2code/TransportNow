@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.android.transportapp.utils.TransportRequestService;
@@ -15,11 +16,19 @@ import com.example.android.transportapp.utils.TransportRequestService;
 public class TransportWidgetProvider extends AppWidgetProvider {
 
     //To update a widget, pass in the ID of the widget and a RemoteViews object describing the widget
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    public static void updateAppWidget(Context context,
+                                       AppWidgetManager appWidgetManager,
+                                       int appWidgetId,
+                                       String dateNeededBy,
+                                       String originCity,
+                                       String destinationCity) {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.transport_widget_provider);
+
+        //Update the TextViews with latest transport information
+        views.setTextViewText(R.id.appwidget_text_date, dateNeededBy);
+        views.setTextViewText(R.id.appwidget_text_destination, originCity + " to " + destinationCity);
 
         //Create a pending intent to launch MainActivity when the icon in the widget is clicked
         //RemoteViews must be linked to PendingIntents
@@ -49,9 +58,23 @@ public class TransportWidgetProvider extends AppWidgetProvider {
     //Also gives access to forcing an update on all widgets.
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
+        TransportRequestService.getLatestTransport(context);
+    }
+
+    public static void updateTransportWidgets (Context context,
+                                               AppWidgetManager appWidgetManager,
+                                               int[] appWidgetIds,
+                                               String dateNeededBy,
+                                               String originCity,
+                                               String destinationCity) {
+        
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateAppWidget(context,
+                    appWidgetManager,
+                    appWidgetId,
+                    dateNeededBy,
+                    originCity,
+                    destinationCity);
         }
     }
 

@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/widget_margin"
     android:orientation="horizontal"
     android:background="@color/colorPrimary">
@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:layout_gravity="left|center_vertical"
         android:layout_marginRight="@dimen/widget_margin">
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/appwidget_text"
             android:text="Request for Transport"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:layout_gravity="center"
             android:textColor="@android:color/white"/>
 
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="18sp"
+            android:textSize="12sp"
             tools:text="Aug. 12, 2019"
             android:textColor="@android:color/white">
         </TextView>
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="18sp"
+            android:textSize="14sp"
             tools:text="Modesto to Sacramento"
             android:textColor="@android:color/white">
         </TextView>
