@@ -405,6 +405,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     }
 
     private void setUpSpinner() {
+        Log.d(TAG, "setUpSpinner called");
 
         //Attach the string values in the arrays file to a spinner layout using an ArrayAdapter
         genderSpinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -430,21 +431,20 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         view.setPadding(10, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
         String selection = (String) parent.getItemAtPosition(position);
         if (!TextUtils.isEmpty(selection)) {
-            if (selection.equals("Male")) {
-                mGender = "Male";
-                Log.d(TAG, "The gender is: " + mGender);
-            } else if (selection.equals("Female")) {
-                mGender = "Female";
-            } else if (selection.equals("Unknown")) {
-                mGender = "Unknown";
+            if (selection.equals(getString(R.string.gender_male))) {
+                mGender = getString(R.string.gender_male);
+            } else if (selection.equals(getString(R.string.gender_female))) {
+                mGender = getString(R.string.gender_female);
+            } else if (selection.equals(getString(R.string.gender_unknown))) {
+                mGender = getString(R.string.gender_unknown);
             }
 
-            if (selection.equals("Help Needed")) {
-                mStatus = "Help Needed";
-            } else if (selection.equals("Covered")) {
-                mStatus = "Covered";
-            } else if (selection.equals("Cancelled")) {
-                mStatus = "Cancelled";
+            if (selection.equals(getString(R.string.status_help_needed))) {
+                mStatus = getString(R.string.status_help_needed);
+            } else if (selection.equals(getString(R.string.status_covered))) {
+                mStatus = getString(R.string.status_covered);
+            } else if (selection.equals(getString(R.string.status_cancelled))) {
+                mStatus = getString(R.string.status_cancelled);
             }
         }
     }
@@ -621,8 +621,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        mGender = "Unknown";
-        mStatus = "Help Needed";
+        mGender = getString(R.string.gender_unknown);
+        mStatus = getString(R.string.status_help_needed);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class TransportWidgetProvider extends AppWidgetProvider {
                                                String dateNeededBy,
                                                String originCity,
                                                String destinationCity) {
-        
+
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context,
                     appWidgetManager,
