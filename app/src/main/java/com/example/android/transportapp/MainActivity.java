@@ -49,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -395,41 +396,53 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        ArrayList<Transport> list = new ArrayList<>();
+
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.sort_by_covered:
+                list.addAll(mTransports);
+                Log.d(TAG, list.get(0).getDateNeededBy());
                 Toast.makeText(this, getString(R.string.action_show_covered), Toast.LENGTH_SHORT).show();
-                for (Transport transport : mTransports) {
-                    if (!transport.getStatus().equals("Covered")) {
-                        mTransports.remove(transport);
+                for (Iterator<Transport> iterator = list.iterator(); iterator.hasNext();) {
+                    Transport transport = iterator.next();
+                    String status = transport.getStatus();
+                    if (!status.equals(getString(R.string.covered))) {
+                        iterator.remove();
                     }
                 }
-                mAdapter.setTransportData(mTransports);
+                mAdapter.setTransportData(list);
                 return true;
             case R.id.sort_by_cancelled:
+                list.addAll(mTransports);
+                Log.d(TAG, list.get(0).getDateNeededBy());
                 Toast.makeText(this, getString(R.string.action_show_cancelled), Toast.LENGTH_SHORT).show();
-                for (Transport transport : mTransports) {
-                    if (!transport.getStatus().equals("Cancelled")) {
-                        mTransports.remove(transport);
+                for (Iterator<Transport> iterator = list.iterator(); iterator.hasNext();) {
+                    Transport transport = iterator.next();
+                    String status = transport.getStatus();
+                    if (!status.equals(getString(R.string.cancelled))) {
+                        iterator.remove();
                     }
                 }
-                mAdapter.setTransportData(mTransports);
+                mAdapter.setTransportData(list);
                 return true;
             case R.id.sort_by_help_needed:
+                list.addAll(mTransports);
                 Toast.makeText(this, getString(R.string.action_help_needed), Toast.LENGTH_SHORT).show();
-                for (Transport transport : mTransports) {
-                    if (!transport.getStatus().equals("Help needed")) {
-                        mTransports.remove(transport);
+                for (Iterator<Transport> iterator = list.iterator(); iterator.hasNext();) {
+                    Transport transport = iterator.next();
+                    String status = transport.getStatus();
+                    if (!status.equals(getString(R.string.help_needed))) {
+                        iterator.remove();
                     }
                 }
-                mAdapter.setTransportData(mTransports);
+                mAdapter.setTransportData(list);
                 return true;
             case R.id.show_all:
                 Toast.makeText(this, getString(R.string.action_all), Toast.LENGTH_SHORT).show();
-                detachDatabaseReadListener();
-                attachDatabaseReadListener();
+                mAdapter.setTransportData(mTransports);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
