@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:contentDescription="@string/app_icon_image"
         android:src="@drawable/launch_icon"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/widget_margin"
         android:layout_gravity="left|center_vertical"
         android:elevation="6dp"
         android:background="@drawable/image_border"
@@ -30,7 +30,7 @@
         android:orientation="vertical"
         android:layout_weight="2"
         android:layout_gravity="left|center_vertical"
-        android:layout_marginRight="8dp">
+        android:layout_marginRight="@dimen/widget_margin">
 
         <TextView
             android:id="@+id/appwidget_text_title"

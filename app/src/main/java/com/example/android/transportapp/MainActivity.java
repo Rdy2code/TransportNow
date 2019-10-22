@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TransportRequestService.getLatestTransport(this);
 
         //Monitor the connection to the Firebase Database and notify the user when connection is lost
         //or regained

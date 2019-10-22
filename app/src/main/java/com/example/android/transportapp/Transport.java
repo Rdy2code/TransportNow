@@ -3,6 +3,11 @@ package com.example.android.transportapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
+
+import java.util.HashMap;
+
 public class Transport implements Parcelable {
 
     //FIELDS
@@ -17,6 +22,9 @@ public class Transport implements Parcelable {
     private String photoUrl;
     private String note;
     private String weight;
+
+    //HashMap for Timestamp
+    HashMap<String, Object> timestamp;
 
     //Constructor
     public Transport () {
@@ -48,6 +56,10 @@ public class Transport implements Parcelable {
         this.photoUrl = photoUrl;
         this.note = note;
         this.weight = weight;
+
+        HashMap<String, Object> timeStampCurrent = new HashMap<>();
+        timeStampCurrent.put("timestamp", ServerValue.TIMESTAMP);
+        this.timestamp = timeStampCurrent;
     }
 
     //GETTERS
@@ -93,6 +105,16 @@ public class Transport implements Parcelable {
 
     public String getWeight() {
         return weight;
+    }
+
+    //HashMap getter
+    public HashMap<String, Object> getTimestamp() {
+        return timestamp;
+    }
+
+    @Exclude
+    public long getTimestampLong() {
+        return (long) timestamp.get("timestamp");
     }
 
     //SETTERS

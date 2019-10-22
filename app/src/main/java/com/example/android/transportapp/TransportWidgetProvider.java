@@ -7,28 +7,46 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.example.android.transportapp.utils.TransportRequestService;
+
 /**
  * Implementation of App Widget functionality.
  */
 public class TransportWidgetProvider extends AppWidgetProvider {
 
+    //To update a widget, pass in the ID of the widget and a RemoteViews object describing the widget
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.transport_widget_provider);
 
-        //Create an intent to launch MainActivity when the icon in the widget is clicked
+        //Create a pending intent to launch MainActivity when the icon in the widget is clicked
+        //RemoteViews must be linked to PendingIntents
         Intent intent = new Intent (context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         //Register and attach the click handler
         views.setOnClickPendingIntent(R.id.widget_image, pendingIntent);
 
+        //Start the TransportRequestService click handler to get latest transport from the Firebase
+        Intent latestTransportIntent = new Intent (context, TransportRequestService.class);
+        latestTransportIntent.setAction(TransportRequestService.ACTION_GET_LATEST_TRANSPORT);
+        PendingIntent latestTransportPendingIntent = PendingIntent.getService(
+                context,
+                0,
+                latestTransportIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setOnClickPendingIntent(R.id.appwidget_text_title, latestTransportPendingIntent);
+
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    //Called when each App Widget is added to a host and at each update interval, set in the xml file
+    //The AppWidgetManager class gives access to information about all Widgets on the homescreen.
+    //Also gives access to forcing an update on all widgets.
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
