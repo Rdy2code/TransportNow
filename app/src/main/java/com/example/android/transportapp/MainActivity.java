@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     //SwipeRefreshLayout
     private int mSwipedPosition;
-    private boolean mOnSwipe;
 
     //RecyclerView member variables
     private TransportAdapter mAdapter;
@@ -260,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //Delete the transport from the Firebase
                 String path = transportToDelete.getTransportId();
                 mTransportsDatabaseReference.child(path).removeValue();
-                mOnSwipe = true;
             }
 
             @Override
@@ -492,9 +490,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     Log.d(TAG, "onChildAdded called");
 
                     //Add the Uid of each node in the dbase to the transportId child of the node
-                    //Below this ID is added to the transportID field of the Transport object
-                    //This is called only for newly added Transports, no 'for' loops are necessary either
-                    //The Firebase automatically loops through the list
                     mTransportsDatabaseReference
                             .child(dataSnapshot.getKey())
                             .child("transportId")
@@ -549,35 +544,27 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+                    String key = dataSnapshot.getKey();
+
+                    for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
+                        Transport transport = iterator.next();
+                        String id = transport.getTransportId();
+                        if (id.equals(key)) {
+                            iterator.remove();
+                        }
+                    }
+
+                    mAdapter.setTransportData(mTransports);
+
                     Toast.makeText(
                             MainActivity.this,
                             getString(R.string.transport_deleted_message),
                             Toast.LENGTH_SHORT).show();
 
-                    //User has removed a transport from the EditorActivity screen, so update the list
-                    //of transports and notify the adapter.
-
-                    //Deleting from the MainActivity
-                    if (mOnSwipe) {
-                        mTransports.remove(mTransports.get(mSwipedPosition));
-                        mAdapter.setTransportData(mTransports);
-                        //Reset the boolean so this control flow is closed after each swipe
-                        if (mTransports.size() == 0) {
-                            mRecyclerView.setVisibility(View.INVISIBLE);
-                            mEmptyView.setVisibility(View.VISIBLE);
-                        }
-                        mOnSwipe = false;
-                    }
-
-                    //Deleting from the EditorActivity
-                    if (mEditModeOn) {
-                        mTransports.remove(mTransports.get(mClickedItemIndex));
-                        mAdapter.setTransportData(mTransports);
-                        mEditModeOn = false;
-                        if (mTransports.size() == 0) {
-                            mRecyclerView.setVisibility(View.INVISIBLE);
-                            mEmptyView.setVisibility(View.VISIBLE);
-                        }
+                    //Set empty view if this was the last transport in the list
+                    if (mTransports.size() == 0) {
+                        mRecyclerView.setVisibility(View.INVISIBLE);
+                        mEmptyView.setVisibility(View.VISIBLE);
                     }
                 }
 

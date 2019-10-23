@@ -572,7 +572,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             //This code removes the node for this transport from the Firebase and triggers the
             //onChildRemoved callback in the Main Activity, where the list of transports is
             //updated
-            MainActivity.setEditModeOn(true);
             String pathToRemove = mTransport.getTransportId();
             mTransportsDatabaseReference.child(pathToRemove).removeValue();
         }

@@ -110,6 +110,7 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
     }
 
     public void setTransportData (ArrayList<Transport> transports) {
+        Log.d("TransportAdapter", "setTransportData callled");
         mTransports = transports;
         notifyDataSetChanged();
     }
