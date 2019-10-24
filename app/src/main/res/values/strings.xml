@@ -6,7 +6,8 @@
     <string name="icon_person_walking_dog">Icon image placeholder of a person walking a dog</string>
     <string name="error_saving_transport_message">Error with saving transport</string>
     <string name="transport_saved_message">Transport Saved</string>
-    <string name="transport_updated_message">Transport Updated</string>
+    <string name="transport_updated_message">Transport Updated.
+        Newly added transports are automatically updated.</string>
     <string name="transport_deleted_message">Transport Deleted</string>
     <string name="app_icon_image">Cartoon image of a person driving a car with a dog in the
         back seat</string>

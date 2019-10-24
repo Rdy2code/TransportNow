@@ -487,9 +487,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //not needed when the activity is created.
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "onChildAdded called");
 
                     //Add the Uid of each node in the dbase to the transportId child of the node
+                    //This way we can get the ID in the ViewHolder and bind it to a TextView
                     mTransportsDatabaseReference
                             .child(dataSnapshot.getKey())
                             .child("transportId")
@@ -521,26 +521,39 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    if (mEditModeOn) {
-                        //Create a new Transport object with the updated information
-                        Transport transport = dataSnapshot.getValue(Transport.class);
-                        //Replace the old transport object with the new one
-                        mTransports.set(mClickedItemIndex, transport);
-                        //Notify the adapter that the list of transports has been updated
-                        mAdapter.setTransportData(mTransports);
+                    //Key of updated child in the Firebase
+                    String key = dataSnapshot.getKey();
+                    int index = 0;
+                    Transport updatedTransport = null;
 
-                        Toast.makeText(
-                                MainActivity.this,
-                                getString(R.string.transport_updated_message),
-                                Toast.LENGTH_SHORT).show();
-                        mEditModeOn = false;
+                    //Loop through the ArrayList of transports to find the transport that must be updated
+                    for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
+                        updatedTransport = iterator.next();
+                        String id = updatedTransport.getTransportId();
+                        if (id.equals(key)) {
+                            index = mTransports.indexOf(updatedTransport);
+
+                        }
                     }
 
+                    //Update the list of transports in the local storage
+                    mTransports.set(index, dataSnapshot.getValue(Transport.class));
+
+                    //Notify the adapter that the list of transports has been updated
+                    mAdapter.setTransportData(mTransports);
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            getString(R.string.transport_updated_message),
+                            Toast.LENGTH_SHORT).show();
+
+                    //Notify the Widget so that Widget displays most recently updated transport
                     TransportRequestService.getLatestTransport(getApplicationContext());
                 }
 
-                //Called when an existing transport is deleted
-                //The DataSnapshot returned in this callback is the data for the transport that was removed
+                /**Called when an existing transport is deleted.
+                 * The DataSnapshot returned in this callback is the data for the transport that was removed
+                 */
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
