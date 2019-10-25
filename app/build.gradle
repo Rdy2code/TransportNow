@@ -18,6 +18,18 @@ android {
         }
     }
 
+    flavorDimensions "version"
+    productFlavors {
+        user {
+            dimension "version"
+            applicationId 'com.example.android.transportapp'
+        }
+        admin {
+            dimension "version"
+            applicationIdSuffix '.admin'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
