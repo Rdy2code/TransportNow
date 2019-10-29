@@ -118,6 +118,7 @@ public class TransportRequestService extends IntentService {
         String dateNeededBy = recentTransport.getDateNeededBy();
         String originCity = recentTransport.getOriginCity();
         String destinationCity = recentTransport.getDestinationCity();
+        String status = recentTransport.getStatus();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, TransportWidgetProvider.class));
@@ -127,6 +128,7 @@ public class TransportRequestService extends IntentService {
                 appWidgetIds,
                 dateNeededBy,
                 originCity,
-                destinationCity);
+                destinationCity,
+                status);
     }
 }

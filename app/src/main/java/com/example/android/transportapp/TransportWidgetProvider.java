@@ -21,7 +21,8 @@ public class TransportWidgetProvider extends AppWidgetProvider {
                                        int appWidgetId,
                                        String dateNeededBy,
                                        String originCity,
-                                       String destinationCity) {
+                                       String destinationCity,
+                                       String status) {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.transport_widget_provider);
@@ -29,6 +30,7 @@ public class TransportWidgetProvider extends AppWidgetProvider {
         //Update the TextViews with latest transport information
         views.setTextViewText(R.id.appwidget_text_date, dateNeededBy);
         views.setTextViewText(R.id.appwidget_text_destination, originCity + " to " + destinationCity);
+        views.setTextViewText(R.id.appwidget_text_status, status);
 
         //Create a pending intent to launch MainActivity when the icon in the widget is clicked
         //RemoteViews must be linked to PendingIntents
@@ -66,7 +68,8 @@ public class TransportWidgetProvider extends AppWidgetProvider {
                                                int[] appWidgetIds,
                                                String dateNeededBy,
                                                String originCity,
-                                               String destinationCity) {
+                                               String destinationCity,
+                                               String status) {
 
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context,
@@ -74,7 +77,8 @@ public class TransportWidgetProvider extends AppWidgetProvider {
                     appWidgetId,
                     dateNeededBy,
                     originCity,
-                    destinationCity);
+                    destinationCity,
+                    status);
         }
     }
 

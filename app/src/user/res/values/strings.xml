@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_transport_details">Transport Details</string>
+
+    <string name="from_to_string">%1$s to %2$s</string>
+
+    <string name="email_body_text_user_mode">
+
+        Hi, regarding, %1$s needs a ride from %2$s to %3$s on %4$s, I can help with this transport.\n\nI
+        can be reached at (###) ###-####.\n\n-Name
+
+    </string>
+
+    <!--EditorActivity UI Resources-->
+    <string name="button_text">I\'m available</string>
+
+    <string name="text_transport_id">ID</string>
+
+</resources>
