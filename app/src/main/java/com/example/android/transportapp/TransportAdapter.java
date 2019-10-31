@@ -97,7 +97,7 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
         transportViewHolder.dateTv.setText(transport.getDateNeededBy());
         transportViewHolder.genderTv.setText(transport.getGender());
         transportViewHolder.nameTv.setText(transport.getName());
-        transportViewHolder.daysSincePostTv.setText("5 days ago");
+        transportViewHolder.daysSincePostTv.setText("5 days ago");  //TODO:Not yet implemented
         transportViewHolder.iDTv.setText(transport.getTransportId());
     }
 
@@ -110,7 +110,6 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
     }
 
     public void setTransportData (ArrayList<Transport> transports) {
-        Log.d("TransportAdapter", "setTransportData callled");
         mTransports = transports;
         notifyDataSetChanged();
     }

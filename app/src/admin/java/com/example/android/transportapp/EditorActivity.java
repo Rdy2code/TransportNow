@@ -40,15 +40,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.example.android.transportapp.utils.DatePickerFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
@@ -57,7 +65,8 @@ import butterknife.ButterKnife;
 public class EditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         AdapterView.OnItemSelectedListener {
 
-    private final static String TAG = EditorActivity.class.getSimpleName();
+    private static final String TAG = EditorActivity.class.getSimpleName();
+    private static final int RC_PHOTO_PICKER = 2;
 
     //Get references to views and variable for picking and storing animal's gender
     @BindView(R.id.spinner_gender) Spinner mGenderSpinner;
@@ -84,12 +93,18 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     @BindView(R.id.share_fab) FloatingActionButton mShareFab;
     @BindView(R.id.switch_urgency) Switch mSwitchUrgency;
 
-    //Firebase Realtime Database object reference entry points
+    //Firebase object reference entry points
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mTransportsDatabaseReference;
+    private FirebaseStorage mFirebaseStorage;
+    private StorageReference mTransportPhotosStorageReference;
+    //Variable for storing a reference to the most recently selected photo
+    private StorageReference mPhotoRef;
 
     //URI for storing and retrieving photos of animals from user's device
     Uri mPhotoUri;
+    //Download Uri for the photo in Firebase Storage
+    Uri mDownloadPhotoUri;
 
     //Boolean variable used to indicate whether user has updated any parts of a transport
     private boolean mTransportChanged = false;
@@ -303,8 +318,14 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
                 if (mTransport.getPhotoUrl() != null) {
                     mPhotoUri = Uri.parse(mTransport.getPhotoUrl());
-                    //loadPhoto(mPhotoUri);
-                    loadPhoto(mPhotoUri);
+                }
+
+                if (mTransport.getDownloadPhotoUrl() != null &&
+                !mTransport.getDownloadPhotoUrl().isEmpty()) {
+                    mDownloadPhotoUri = Uri.parse(mTransport.getDownloadPhotoUrl());
+                    loadPhoto(mDownloadPhotoUri);
+                } else {
+                    mPhotoImageView.setImageResource(R.drawable.icon_camera);
                 }
 
                 //Set the text into the appropriate fields of the EditorActivity UI
@@ -338,7 +359,9 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
         //Firebase Realtime Database setup
         mFirebaseDatabase = FirebaseDatabase.getInstance();         //Main Access point
+        mFirebaseStorage = FirebaseStorage.getInstance();
         mTransportsDatabaseReference = mFirebaseDatabase.getReference().child("transports");
+        mTransportPhotosStorageReference = mFirebaseStorage.getReference().child("transport_photos");
     }
 
     @Override
@@ -500,6 +523,10 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             mPhotoUri = Uri.parse("");
         }
 
+        if (mDownloadPhotoUri == null) {
+            mDownloadPhotoUri = Uri.parse("");
+        }
+
         if (mModeEdit) {
             //We are in edit mode
             Transport transportObjectEditMode = new Transport(
@@ -513,7 +540,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     mTransport.getTransportId(),
                     mPhotoUri.toString(),
                     note,
-                    weight
+                    weight,
+                    mDownloadPhotoUri.toString()
             );
 
             if (fieldChecker(mPhotoUri.toString())) {
@@ -539,7 +567,9 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     null,       //Leave as null here;ID is assigned in onChildAdded() in MainActivity
                     mPhotoUri.toString(),
                     note,
-                    weight);
+                    weight,
+                    mDownloadPhotoUri.toString()
+            );
 
             //Since onChildChanged gets called when onChildAdded calls setValue() to update the
             //transportId in the Firebase for this new transport, we need to toggle the boolean
@@ -744,15 +774,50 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            //Uri of the photo we want to save
             mPhotoUri = data.getData();
+            //Reference location of the photo we want to save
+            mPhotoRef =
+                    mTransportPhotosStorageReference.child(mPhotoUri.getLastPathSegment());
+            //Upload the file to Firebase Storage and detect successful upload
+            UploadTask uploadTask = mPhotoRef.putFile(mPhotoUri);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                //Get download Url from Firebase Storage and save Url to Realtime database
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    if (taskSnapshot.getMetadata() != null) {
+                        if (taskSnapshot.getMetadata().getReference() != null) {
+                            Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                            result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    mDownloadPhotoUri = uri;
+                                    loadPhoto(mDownloadPhotoUri);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
         }
-        loadPhoto(mPhotoUri);
     }
 
     //After many hours, found that Picasso could not load a Uri from Firebase, but Glide can.
     private void loadPhoto (Uri photoUri) {
-        Glide.with(this).load(photoUri).into(mPhotoImageView);
+
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
+
+        Glide.with(this)
+                .load(photoUri)
+                .placeholder(circularProgressDrawable)
+                .error(R.drawable.icon_camera)
+                .into(mPhotoImageView);
     }
 
     private void isChecked (boolean on) {
@@ -767,14 +832,27 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     }
 
     private void getPhoto() {
-        Intent loadPhotoIntent = new Intent (Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(loadPhotoIntent, 0);
+        //Image picker
+        Intent loadPhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        loadPhotoIntent.setType("image/jpeg");
+        loadPhotoIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(Intent.createChooser(loadPhotoIntent, "Complete action using"), RC_PHOTO_PICKER);
+
     }
 
     private void removePhoto() {
         mPhotoImageView.setImageDrawable(null);
         mPhotoUri = null;
-        loadPhoto(mPhotoUri);
+        StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl(mDownloadPhotoUri.toString());
+        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplicationContext(), "Photo deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mDownloadPhotoUri = null;
+        loadPhoto(mDownloadPhotoUri);
+
     }
 }

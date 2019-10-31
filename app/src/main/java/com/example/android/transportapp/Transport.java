@@ -22,6 +22,7 @@ public class Transport implements Parcelable {
     private String photoUrl;
     private String note;
     private String weight;
+    private String downloadPhotoUrl;
 
     //HashMap for Timestamp
     HashMap<String, Object> timestamp;
@@ -42,7 +43,8 @@ public class Transport implements Parcelable {
                       String transportId,
                       String photoUrl,
                       String note,
-                      String weight) {
+                      String weight,
+                      String downloadPhotoUrl) {
 
         //Initialize member variables to the values passed into the constructor
         this.status = status;
@@ -56,6 +58,7 @@ public class Transport implements Parcelable {
         this.photoUrl = photoUrl;
         this.note = note;
         this.weight = weight;
+        this.downloadPhotoUrl = downloadPhotoUrl;
 
         HashMap<String, Object> timeStampCurrent = new HashMap<>();
         timeStampCurrent.put("timestamp", ServerValue.TIMESTAMP);
@@ -105,6 +108,10 @@ public class Transport implements Parcelable {
 
     public String getWeight() {
         return weight;
+    }
+
+    public String getDownloadPhotoUrl() {
+        return downloadPhotoUrl;
     }
 
     //HashMap getter
@@ -162,6 +169,10 @@ public class Transport implements Parcelable {
         this.weight = weight;
     }
 
+    public void setDownloadPhotoUrl (String downloadPhotoUrl) {
+        this.downloadPhotoUrl = downloadPhotoUrl;
+    }
+
     //Implement Parcelable methods:
     //Copy Transport object into a parcel for transmission from one activity to another
     @Override
@@ -183,6 +194,7 @@ public class Transport implements Parcelable {
         parcel.writeString(photoUrl);
         parcel.writeString(note);
         parcel.writeString(weight);
+        parcel.writeString(downloadPhotoUrl);
     }
 
     //Constructor for parcelable called by the receiving activity
@@ -198,6 +210,7 @@ public class Transport implements Parcelable {
         photoUrl = parcel.readString();
         note = parcel.readString();
         weight = parcel.readString();
+        downloadPhotoUrl = parcel.readString();
     }
 
     public static final Parcelable.Creator<Transport> CREATOR = new Parcelable.Creator<Transport>() {

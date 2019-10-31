@@ -338,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy called");
 
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
@@ -350,7 +349,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     @Override
     protected void onPause() {
         //Activity is no longer in the foreground
-        Log.d(TAG, "onPause called");
         super.onPause();
 //        if (mAuthStateListener != null) {
 //            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
@@ -362,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     @Override
     protected void onResume() {
         //Activity is in the foreground
-        Log.d(TAG, "onResume called");
         super.onResume();
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
@@ -452,7 +449,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private void onSignedInInitialize (String username) {
         //User name can be attached to the Transport object if necessary
         mUsername = username;
-        Log.d(TAG, "user name is " + mUsername);
         attachDatabaseReadListener();
     }
 
