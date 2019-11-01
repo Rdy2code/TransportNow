@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mTransportsDatabaseReference;
     private ChildEventListener mChildEventListener;
-    private static boolean mEditModeOn;
     private boolean mIsConnected;
     private int mClickedItemIndex;
     private int mOnChildAddedCount;
@@ -78,9 +77,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private FirebaseUser mUser;
     private static final int RC_SIGN_IN = 1;    //Request code for FirebaseAuthStateListener
     private String mUsername;
-
-    //SwipeRefreshLayout
-    private int mSwipedPosition;
 
     //RecyclerView member variables
     private TransportAdapter mAdapter;
@@ -111,10 +107,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         //Get a reference to the section of the database where Transports are stored
         mTransportsDatabaseReference = mFirebaseDatabase.getReference().child("transports");
         mTransportsDatabaseReference.keepSynced(true);
-
-        mEditModeOn = false;
-
-        isStoragePermissionGranted();
 
         ButterKnife.bind(this);
 
@@ -201,138 +193,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         mTransports = new ArrayList<Transport>();
 
         mRecyclerView.setAdapter(mAdapter);
-
-        setItemTouchHelper();
-    }
-
-    //Swipe-to-delete action with red background animation
-    //Credit to: https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete/blob/master/
-    // app/src/main/java/net/nemanjakovacevic/recyclerviewswipetodelete/MainActivity.java
-    private void setItemTouchHelper() {
-        ItemTouchHelper.SimpleCallback simpleTouchCallback = new ItemTouchHelper.SimpleCallback(
-                0, ItemTouchHelper.LEFT) {
-
-            Drawable background;
-            Drawable xMark;
-            int xMarkMargin;
-            boolean initiated;
-
-            private void init() {
-                background = new ColorDrawable(Color.RED);
-                xMark = ContextCompat.getDrawable(MainActivity.this, R.drawable.swipe_color);
-                xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                xMarkMargin = (int) MainActivity.this.getResources().getDimension(R.dimen.standard_padding_margin);
-                initiated = true;
-            }
-
-            @Override
-            public boolean onMove(
-                    @NonNull RecyclerView recyclerView,
-                    @NonNull RecyclerView.ViewHolder viewHolder,
-                    @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-                //Get the position of the item being swiped
-                mSwipedPosition = viewHolder.getAdapterPosition();
-
-                //Get a reference to the deleted Transport object from the ArrayList of transports
-                Transport transportToDelete = mTransports.get(mSwipedPosition);
-
-                //Delete the transport from the Firebase
-                String path = transportToDelete.getTransportId();
-                mTransportsDatabaseReference.child(path).removeValue();
-            }
-
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX,
-                                    float dY, int actionState, boolean isCurrentlyActive) {
-
-                View itemView = viewHolder.itemView;
-
-                if (viewHolder.getAdapterPosition() == -1) {
-                    // not interested in those
-                    return;
-                }
-
-                if (!initiated) {
-                    init();
-                }
-
-                //Draw red background
-                background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                background.draw(c);
-
-                // draw x mark
-                int itemHeight = itemView.getBottom() - itemView.getTop();
-                int intrinsicWidth = xMark.getIntrinsicWidth();
-                int intrinsicHeight = xMark.getIntrinsicWidth();
-
-                int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
-                int xMarkRight = itemView.getRight() - xMarkMargin;
-                int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight)/2;
-                int xMarkBottom = xMarkTop + intrinsicHeight;
-                xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
-
-                xMark.draw(c);
-
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-
-        ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(simpleTouchCallback);
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-    }
-
-    public static void setEditModeOn (boolean editMode) {
-        mEditModeOn = editMode;
-    }
-
-    //isStoragePermissionGranted and onRequestPermissionResult code derived from stackoverflow
-    //after researching the problem of how to obtain permission at runtime
-    public boolean isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted");
-                return true;
-            } else {
-
-                Log.v(TAG,"Permission is revoked");
-                ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted");
-            return true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case 0:
-                boolean isPerpermissionForAllGranted = false;
-                if (grantResults.length > 0 && permissions.length==grantResults.length) {
-                    for (int i = 0; i < permissions.length; i++){
-                        isPerpermissionForAllGranted= grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                    }
-                } else {
-                    isPerpermissionForAllGranted=true;
-                }
-                if(isPerpermissionForAllGranted){
-                    // do your stuff here
-                }
-                break;
-        }
     }
 
     @Override
@@ -344,17 +204,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         }
         mTransports.clear();
         detachDatabaseReadListener();
-    }
-
-    @Override
-    protected void onPause() {
-        //Activity is no longer in the foreground
-        super.onPause();
-//        if (mAuthStateListener != null) {
-//            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-//        }
-//        mTransports.clear();
-//        detachDatabaseReadListener();
     }
 
     @Override
@@ -377,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //Create a new local array list for sorting while leaving the main ArrayList un-modified
         ArrayList<Transport> list = new ArrayList<>();
 
         switch (item.getItemId()) {
@@ -470,21 +320,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    //Add the Uid of each node in the dbase to the transportId child of the node
-                    //This way we can get the ID in the ViewHolder and bind it to a TextView
-                    mTransportsDatabaseReference
-                            .child(dataSnapshot.getKey())
-                            .child("transportId")
-                            .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
-
-
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
-
-                    //Not sure why, but found this block was necessary to prevent a null pointer exception
-                    if (transport.getTransportId() == null) {
-                        transport.setTransportId(dataSnapshot.getKey());
-                    }
 
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
                     mTransports.add(transport);
@@ -518,16 +355,12 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                         }
                     }
 
-                    //Update the list of transports in the local storage
+                    //Read the values in the Firebaes for the updated transport and then update the
+                    //list of transports in the ArrayList
                     mTransports.set(index, dataSnapshot.getValue(Transport.class));
 
                     //Notify the adapter that the list of transports has been updated
                     mAdapter.setTransportData(mTransports);
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            getString(R.string.transport_updated_message),
-                            Toast.LENGTH_SHORT).show();
 
                     //Notify the Widget so that Widget displays most recently updated transport
                     TransportRequestService.getLatestTransport(getApplicationContext());
@@ -551,11 +384,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     mAdapter.setTransportData(mTransports);
 
-                    Toast.makeText(
-                            MainActivity.this,
-                            getString(R.string.transport_deleted_message),
-                            Toast.LENGTH_SHORT).show();
-
                     //Set empty view if this was the last transport in the list
                     if (mTransports.size() == 0) {
                         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -571,12 +399,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 //Called when an error occurs when user tries to make changes
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    if (mUser != null) {
-                        Toast.makeText(
-                                MainActivity.this,
-                                getString(R.string.error_saving_transport_message),
-                                Toast.LENGTH_SHORT).show();
-                    }
+
                 }
             };
 
@@ -619,7 +442,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.w("TransportApp", "Listener was cancelled");
                     }
                 });
             }

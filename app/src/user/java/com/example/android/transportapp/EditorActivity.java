@@ -41,6 +41,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
@@ -84,6 +85,8 @@ public class EditorActivity extends AppCompatActivity {
 
     //URI for animal photo on user's device
     Uri mPhotoUri;
+    //Uri for photo in Firebase Storage
+    Uri mDownloadPhotoUri;
 
     //Transport Java Object
     Transport mTransport;
@@ -147,8 +150,14 @@ public class EditorActivity extends AppCompatActivity {
 
                 if (mTransport.getPhotoUrl() != null) {
                     mPhotoUri = Uri.parse(mTransport.getPhotoUrl());
-                    //loadPhoto(mPhotoUri);
-                    loadPhoto(mPhotoUri);
+                }
+
+                if (mTransport.getDownloadPhotoUrl() != null &&
+                        !mTransport.getDownloadPhotoUrl().isEmpty()) {
+                    mDownloadPhotoUri = Uri.parse(mTransport.getDownloadPhotoUrl());
+                    loadPhoto(mDownloadPhotoUri);
+                } else {
+                    mPhotoImageView.setImageResource(R.drawable.icon_camera);
                 }
 
                 mStatusTextView.setText(mStatus);
@@ -222,19 +231,17 @@ public class EditorActivity extends AppCompatActivity {
         return;
     }
 
-    //Get the Uri of the photo on the user's device so that the photo can be loaded into the ImageView
-    //Credit for code to: https://stackoverflow.com/questions/11144783/how-to-access-an-image-from-the-phones-photo-gallery
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            mPhotoUri = data.getData();
-        }
-        loadPhoto(mPhotoUri);
-    }
-
     //After many hours, found that Picasso could not load a Uri from Firebase, but Glide can.
     private void loadPhoto (Uri photoUri) {
-        Glide.with(this).load(photoUri).into(mPhotoImageView);
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
+
+        Glide.with(this)
+                .load(photoUri)
+                .placeholder(circularProgressDrawable)
+                .error(R.drawable.icon_camera)
+                .into(mPhotoImageView);
     }
 }

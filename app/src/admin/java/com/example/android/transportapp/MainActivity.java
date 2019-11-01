@@ -36,9 +36,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser mUser;
-    private static final int RC_SIGN_IN = 1;    //Request code for FirebaseAuthStateListener
+    public static final int RC_SIGN_IN = 11;    //Request code for FirebaseAuthStateListener
     private String mUsername;
 
     //SwipeRefreshLayout
@@ -99,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         //Monitor the connection to the Firebase Database and notify the user when connection is lost
         //or regained
-        setUpEventListener();
+        if (savedInstanceState == null) {
+            setUpEventListener();
+        }
 
         //This block of code ensures that onCreateOptionsMenu is called
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -116,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         mTransportsDatabaseReference.keepSynced(true);
 
         mEditModeOn = false;
-
-        isStoragePermissionGranted();
 
         ButterKnife.bind(this);
 
@@ -155,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     //user is signed in
+                    isStoragePermissionGranted();
                     onSignedInInitialize(user.getDisplayName());
 
                     //Read the database
@@ -175,6 +180,15 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         mEmptyView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
+
+        FirebaseUserMetadata metadata = mFirebaseAuth.getCurrentUser().getMetadata();
+        if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+
+        } else {
+            // This is an existing user, show them a welcome back screen.
+            Toast.makeText(getApplicationContext(), "Welcome back "
+                    + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Get result code from sign in so that we either close the app or go forward
@@ -248,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.d(TAG, "onSwiped called");
 
                 //Get the position of the item being swiped
                 mSwipedPosition = viewHolder.getAdapterPosition();
@@ -363,21 +378,18 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     protected void onPause() {
         //Activity is no longer in the foreground
         super.onPause();
-//        if (mAuthStateListener != null) {
-//            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-//        }
-//        mTransports.clear();
-//        detachDatabaseReadListener();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+        detachDatabaseReadListener();
+        mTransports.clear();
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume called");
         //Activity is in the foreground
         super.onResume();
-        if (mAuthStateListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        }
-
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -485,10 +497,13 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     //Add the Uid of each node in the dbase to the transportId child of the node
                     //This way we can get the ID in the ViewHolder and bind it to a TextView
-                    mTransportsDatabaseReference
-                            .child(dataSnapshot.getKey())
-                            .child("transportId")
-                            .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
+                    if (dataSnapshot.getValue(Transport.class).getTransportId() == null) {
+                        mTransportsDatabaseReference
+                                .child(dataSnapshot.getKey())
+                                .child("transportId")
+                                .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
+                    }
+
 
 
                     //Deserialize the values for each item in the dbase and place them in a Transport object
@@ -551,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                  */
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onChildRemoved called");
 
                     String key = dataSnapshot.getKey();
 
@@ -632,7 +648,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.w("TransportApp", "Listener was cancelled");
                     }
                 });
             }
