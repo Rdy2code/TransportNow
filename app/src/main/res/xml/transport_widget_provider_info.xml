@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--Define minWidth as 3 cells and minHeight as 2 cells-->
+
 <appwidget-provider
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/transport_widget_provider"
     android:initialLayout="@layout/transport_widget_provider"
-    android:minWidth="100dp"
-    android:minHeight="60dp"
+    android:minWidth="180dp"
+    android:minHeight="110dp"
     android:previewImage="@drawable/launch_icon"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
