@@ -36,13 +36,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -180,15 +176,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         mEmptyView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
-
-        FirebaseUserMetadata metadata = mFirebaseAuth.getCurrentUser().getMetadata();
-        if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
-
-        } else {
-            // This is an existing user, show them a welcome back screen.
-            Toast.makeText(getApplicationContext(), "Welcome back "
-                    + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     //Get result code from sign in so that we either close the app or go forward
@@ -198,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed In!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_signed_in), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED)  {
-                Toast.makeText(this, "Sign in Cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_sign_in_cancel), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -262,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Log.d(TAG, "onSwiped called");
 
                 //Get the position of the item being swiped
                 mSwipedPosition = viewHolder.getAdapterPosition();
@@ -327,17 +313,14 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted");
                 return true;
             } else {
 
-                Log.v(TAG,"Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted");
             return true;
         }
     }
@@ -387,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume called");
         //Activity is in the foreground
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
@@ -566,7 +548,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                  */
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onChildRemoved called");
 
                     String key = dataSnapshot.getKey();
 
@@ -636,12 +617,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean connected = snapshot.getValue(Boolean.class);
                         if (connected) {
-                            Toast.makeText(getApplicationContext(), "You are connected to TransportNow",
+                            Toast.makeText(getApplicationContext(), getString(R.string.toast_connected_to_app),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "You have lost internet connection. You" +
-                                            " may continue to work, but changes won't be synced with the cloud" +
-                                            " until you reconnect.",
+                            Toast.makeText(getApplicationContext(), getString(R.string.toast_lost_connection),
                                     Toast.LENGTH_LONG).show();
                         }
                     }

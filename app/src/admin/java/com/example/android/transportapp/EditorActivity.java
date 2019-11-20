@@ -212,7 +212,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Log.d(TAG, "switched on");
                     mSwitchUrgency.setTextColor(getColor(R.color.urgent));
                     mIsTransportUrgent = true;
 
@@ -283,7 +282,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
             if (savedInstanceState.containsKey("genderSelected")) {
                 mGenderSpinner.setSelection(savedInstanceState.getInt("genderSelected"));
-                Log.d(TAG, savedInstanceState.getInt("genderSelected") + "" );
             }
 
             if (savedInstanceState.containsKey("statusSelected")) {
@@ -306,7 +304,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                 //Get the field values from the Transport object sent with the intent
                 String status = mTransport.getStatus();
                 boolean urgency = mTransport.getUrgency();
-                Log.d(TAG, "ugency is " + urgency);
                 String originCity = mTransport.getOriginCity();
                 String destinationCity = mTransport.getDestinationCity();
                 String dateNeededBy = mTransport.getDateNeededBy();
@@ -425,7 +422,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     }
 
     private void setUpSpinner() {
-        Log.d(TAG, "setUpSpinner called");
 
         //Attach the string values in the arrays file to a spinner layout using an ArrayAdapter
         genderSpinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -607,7 +603,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "onCreateOptions called");
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_editor, menu);
         return true;
@@ -655,7 +650,6 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("genderSelected", mGenderSpinner.getSelectedItemPosition());
-        Log.d(TAG, "spinner position is: " + mGenderSpinner.getSelectedItemPosition());
         outState.putInt("statusSelected", mStatusSpinner.getSelectedItemPosition());
     }
 
@@ -836,7 +830,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         Intent loadPhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
         loadPhotoIntent.setType("image/jpeg");
         loadPhotoIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivityForResult(Intent.createChooser(loadPhotoIntent, "Complete action using"), RC_PHOTO_PICKER);
+        startActivityForResult(Intent.createChooser(loadPhotoIntent, "Complete action using"),
+                RC_PHOTO_PICKER);
 
     }
 
@@ -847,7 +842,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplicationContext(), "Photo deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.transport_deleted_message),
+                        Toast.LENGTH_SHORT).show();
             }
         });
 

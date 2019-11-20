@@ -3,15 +3,25 @@ package com.example.android.transportapp;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.icu.text.TimeZoneFormat;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,6 +100,19 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
             transportViewHolder.urgentTV.setVisibility(View.INVISIBLE);
         }
 
+        //Calculate the time difference in days between the date posted and the current date
+        //TODO: Review use of java.time framework to handle timezone, leap years, daylight saving
+        long datePosted = transport.getTimestampLong();
+        long currentDate = new Date().getTime();
+        String daysPassedSinceUpdate = "";
+        long timeDifference = Math.abs(currentDate - datePosted);
+
+        if (timeDifference < 86400000) {
+                daysPassedSinceUpdate = "Today";
+            } else {
+                daysPassedSinceUpdate = String.valueOf(timeDifference/86400000) + " days ago";
+            }
+
         //Bind the data to the views inside the ViewHolder object instance
         transportViewHolder.transportStatusTv.setText(transport.getStatus());
         transportViewHolder.originCityTv.setText(mSubstringOriginCity);
@@ -97,7 +120,7 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
         transportViewHolder.dateTv.setText(transport.getDateNeededBy());
         transportViewHolder.genderTv.setText(transport.getGender());
         transportViewHolder.nameTv.setText(transport.getName());
-        transportViewHolder.daysSincePostTv.setText("5 days ago");  //TODO:Not yet implemented
+        transportViewHolder.daysSincePostTv.setText(daysPassedSinceUpdate);
         transportViewHolder.iDTv.setText(transport.getTransportId());
     }
 
@@ -138,5 +161,19 @@ public class TransportAdapter extends RecyclerView.Adapter<TransportAdapter.Tran
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }
+    }
+
+    private long getTimeDifferenceBetweenDates (String dateNeededBy) {
+        SimpleDateFormat dateNeeded = new SimpleDateFormat("MMM dd, YYYY");
+        long timeInMillis = 0;
+        try {
+            Date date = dateNeeded.parse(dateNeededBy);
+            timeInMillis = date.getTime();
+            Log.d("TransportAdapter", "the time is " + date.getTime());
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("TransportAdapter", "time in millis is " + timeInMillis);
+        return timeInMillis;
     }
 }

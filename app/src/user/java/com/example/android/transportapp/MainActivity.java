@@ -92,8 +92,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         //Monitor the connection to the Firebase Database and notify the user when connection is lost
         //or regained
-        setUpEventListener();
-
+        if (savedInstanceState == null) {
+            setUpEventListener();
+        }
         //This block of code ensures that onCreateOptionsMenu is called
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -163,9 +164,11 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed In!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_signed_in),
+                        Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED)  {
-                Toast.makeText(this, "Sign in Cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_lost_connection),
+                        Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -204,6 +207,17 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         }
         mTransports.clear();
         detachDatabaseReadListener();
+    }
+
+    @Override
+    protected void onPause() {
+        //Activity is no longer in the foreground
+        super.onPause();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+        detachDatabaseReadListener();
+        mTransports.clear();
     }
 
     @Override
@@ -323,6 +337,11 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
 
+                    //Not sure why, but found this block was necessary to prevent a null pointer exception
+                    if (transport.getTransportId() == null) {
+                        transport.setTransportId(dataSnapshot.getKey());
+                    }
+
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
                     mTransports.add(transport);
                     mOnChildAddedCount++;
@@ -351,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                         String id = updatedTransport.getTransportId();
                         if (id.equals(key)) {
                             index = mTransports.indexOf(updatedTransport);
-
                         }
                     }
 
@@ -430,12 +448,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean connected = snapshot.getValue(Boolean.class);
                         if (connected) {
-                            Toast.makeText(getApplicationContext(), "You are connected to TransportNow",
+                            Toast.makeText(getApplicationContext(), getString(R.string.toast_signed_in),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "You have lost internet connection. You" +
-                                            " may continue to work, but changes won't be synced with the cloud" +
-                                            " until you reconnect.",
+                            Toast.makeText(getApplicationContext(), getString(R.string.toast_lost_connection),
                                     Toast.LENGTH_LONG).show();
                         }
                     }

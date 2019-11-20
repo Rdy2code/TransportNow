@@ -6,11 +6,16 @@
     <string name="icon_person_walking_dog">Icon image placeholder of a person walking a dog</string>
     <string name="error_saving_transport_message">Error with saving transport</string>
     <string name="transport_saved_message">Transport saved!</string>
-    <string name="transport_updated_message">Transport Updated.
-        Newly added transports are automatically updated.</string>
-    <string name="transport_deleted_message">Transport Deleted</string>
+    <string name="transport_updated_message">Transport updated</string>
+    <string name="transport_deleted_message">Transport deleted</string>
     <string name="app_icon_image">Cartoon image of a person driving a car with a dog in the
         back seat</string>
+    <string name="toast_signed_in">Signed In!</string>
+    <string name="toast_sign_in_cancel">Sign in cancelled</string>
+    <string name="toast_connected_to_app">You are connected to TransportNow</string>
+    <string name="toast_lost_connection">
+        You have lost internet connection.
+        You may continue to work, but changes won\'t be synced with the cloud until you reconnect</string>
     <string name="sign_out">Sign out</string>
     <string name="covered">Covered</string>
     <string name="cancelled">Cancelled</string>
@@ -42,9 +47,10 @@
     <string name="category_to">To&#8230;</string>
     <string name="hint_origin_city">City, State</string>
     <string name="hint_destination_city">City, State </string>
+    <string name="switch_text_urgent">Urgent</string>
     <string name="hint_notes">Notes</string>
     <string name="category_animal_details">Details</string>
-    <string name="animal_photo">Photo of animal</string>
+    <string name="animal_photo">Photograph of the animal in need of transport</string>
     <string name="category_name">Name</string>
     <string name="category_gender">Gender</string>
     <string name="gender_unknown">Unknown</string>
@@ -72,6 +78,18 @@
     <string name="photo_not_found_message">Photo not found on your device</string>
     <string name="action_share">Floating Action Button</string>
     <string name="transport_id_label">Transport ID: %1$s</string>
+
+    <string name="placeholder_text_transport_id">Transport ID</string>
+
+    <!--String resources list item layout-->
+    <string name="content_description_car_icon">Direction of travel indicator from the origin city
+        to the destination city</string>
+
+    <!--String resources for App widget-->
+    <string name="content_description_app_widget_icon">Cartoon image shows a driver in car with a dog</string>
+    <string name="widget_text_request_transport">Request for Transport</string>
+    <string name="placeholder_text_date">Aug 12, 2019</string>
+    <string name="placeholder_text_origin_destination">Modesto to Stockton</string>
 
     <!--String resources for email sharing of transport information-->
     <string name="email_subject">NorCal GSP Request for transport: %1$s (%2$s) </string>

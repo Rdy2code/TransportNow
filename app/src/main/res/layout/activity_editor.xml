@@ -171,7 +171,7 @@
                     android:layout_weight="1.5"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="60dp"
-                    android:text="Urgent"
+                    android:text="@string/switch_text_urgent"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:checked="false"
                     android:textAlignment="viewEnd"
@@ -221,7 +221,7 @@
                         android:id="@+id/transport_id_textview"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                         android:layout_marginTop="8dp"
-                        tools:text="Transport ID"/>
+                        tools:text="@string/placeholder_text_transport_id"/>
 
                 </LinearLayout>
             </LinearLayout>

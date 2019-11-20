@@ -116,7 +116,7 @@ public class EditorActivity extends AppCompatActivity {
 
                 //Put transport coordinator address here
                 String[] toAddress;
-                toAddress = new String[]{"mailatcolorado@yahoo.com"};
+                toAddress = new String[]{""};       //TODO: Insert transport coordinator address here
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setType("text/plain");

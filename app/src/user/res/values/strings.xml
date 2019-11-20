@@ -14,7 +14,26 @@
 
     <!--EditorActivity UI Resources-->
     <string name="button_text">I\'m available</string>
-
     <string name="text_transport_id">ID</string>
+    <string name="to_textview_button">To&#8230;</string>
+    <string name="content_description_map_icon">Display a map showing the transport
+    destination</string>
+    <string name="content_description_dog_license_icon">Denotes start of animal
+    description on the screen, including name, gender, and weight</string>
+    <string name="content_description_animal_photograph">If available, show a
+    photograph of the animal in need of transport</string>
+    <string name="content_description_notes_icon">Denotes start of notes field on the
+        device screen</string>
+    <string name="content_description_divider_line">Begin animal details section of screen content</string>
+    <string name="placeholder_text_origin_to_destination" translatable="false">
+        San Bruno to Grass Valley</string>
+    <string name="placeholder_text_status_of_transport">Help needed</string>
+    <string name="placeholder_text_date">Aug 12, 2019</string>
+    <string name="placeholder_text_name">Toby</string>
+    <string name="placeholder_text_gender">Male</string>
+    <string name="placeholder_text_weight">55 lbs</string>
+    <string name="placeholder_text_notes_field">
+        Harness and/or crate recommended. This can be done on Saturday or Sunday.</string>
+    <string name="placeholder_text_transport_id">111111</string>
 
 </resources>

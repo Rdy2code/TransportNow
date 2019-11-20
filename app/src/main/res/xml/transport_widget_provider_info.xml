@@ -10,6 +10,7 @@
     android:previewImage="@drawable/launch_icon"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:contentDescription="@string/content_description_app_widget_icon">
 
 </appwidget-provider>

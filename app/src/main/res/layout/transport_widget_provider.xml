@@ -17,7 +17,7 @@
         android:contentDescription="@string/app_icon_image"
         android:src="@drawable/launch_icon"
         android:layout_margin="@dimen/widget_margin"
-        android:layout_gravity="left|center_vertical"
+        android:layout_gravity="start|center_vertical"
         android:elevation="6dp"
         android:background="@drawable/image_border"
         android:padding="5dp"
@@ -30,7 +30,7 @@
         android:orientation="vertical"
         android:layout_weight="3"
         android:layout_gravity="start|center_vertical"
-        android:layout_marginRight="@dimen/widget_margin">
+        android:layout_marginEnd="@dimen/widget_margin">
 
         <TextView
             android:id="@+id/appwidget_text_status"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/appwidget_text"
-            android:text="Request for Transport"
+            android:text="@string/widget_text_request_transport"
             android:textSize="18sp"
             android:layout_gravity="center"
             android:textColor="@android:color/white"/>
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="14sp"
-            tools:text="Aug. 12, 2019"
+            tools:text="@string/placeholder_text_date"
             android:textColor="@android:color/white">
         </TextView>
 
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="14sp"
-            tools:text="Modesto to Sacramento"
+            tools:text="@string/placeholder_text_origin_destination"
             android:textColor="@android:color/white">
         </TextView>
     </LinearLayout>
