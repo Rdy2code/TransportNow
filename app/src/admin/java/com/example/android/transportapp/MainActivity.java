@@ -97,12 +97,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Monitor the connection to the Firebase Database and notify the user when connection is lost
-        //or regained
-        if (savedInstanceState == null) {
-            setUpEventListener();
-        }
-
         //This block of code ensures that onCreateOptionsMenu is called
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -601,35 +595,5 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             mTransportsDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
-    }
-
-    //Internet connection monitoring. Delay to provide time for internet connection to be established
-    //at launch
-    private void setUpEventListener() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 2000ms
-                DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-                connectedRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean connected = snapshot.getValue(Boolean.class);
-                        if (connected) {
-                            Toast.makeText(getApplicationContext(), getString(R.string.toast_connected_to_app),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.toast_lost_connection),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-            }
-        }, 4000);
     }
 }
