@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.transportapp.utils.NotificationUtils;
 import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -595,5 +596,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             mTransportsDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
+    }
+
+    //For testing purposes only
+    public void testNotification (View view) {
+        NotificationUtils.notifyUserOfUpdate(this);
     }
 }
