@@ -7,6 +7,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -54,6 +56,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -774,14 +777,38 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             //Reference location of the photo we want to save
             mPhotoRef =
                     mTransportPhotosStorageReference.child(mPhotoUri.getLastPathSegment());
-            //Upload the file to Firebase Storage and detect successful upload
-            UploadTask uploadTask = mPhotoRef.putFile(mPhotoUri);
 
+            //Compress the photo for faster upload and download speeds and to save space in the
+            //Firebase
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+
+                //Not sure why, but the getBitmap method rotates the photo by 90 deg.
+                //This block rotates the bitmap back to its original orientation.
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                bitmap = Bitmap.createBitmap(
+                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+            byte[] byteArray = baos.toByteArray();
+
+            //Upload the compressed photo to the Firebase storage
+            UploadTask uploadTask = mPhotoRef.putBytes(byteArray);
+
+            //Use the storage callback to get the url for the compressed photo and save it in
+            //the global variable so that it can be written to a Transport object
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-                //Get download Url from Firebase Storage and save Url to Realtime database
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(EditorActivity.this, "Upload successful",
+                            Toast.LENGTH_SHORT).show();
+
                     if (taskSnapshot.getMetadata() != null) {
                         if (taskSnapshot.getMetadata().getReference() != null) {
                             Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
@@ -799,7 +826,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         }
     }
 
-    //After many hours, found that Picasso could not load a Uri from Firebase, but Glide can.
+    //Found that Picasso could not load a Uri from Firebase, but Glide can.
     private void loadPhoto (Uri photoUri) {
 
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
@@ -808,6 +835,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         circularProgressDrawable.start();
 
         Glide.with(this)
+                .asBitmap()
                 .load(photoUri)
                 .placeholder(circularProgressDrawable)
                 .error(R.drawable.icon_camera)
@@ -849,6 +877,5 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
         mDownloadPhotoUri = null;
         loadPhoto(mDownloadPhotoUri);
-
     }
 }
