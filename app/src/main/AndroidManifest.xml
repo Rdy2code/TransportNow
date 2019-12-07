@@ -23,6 +23,7 @@
         android:roundIcon="@drawable/launch_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".EditorActivity"
             android:parentActivityName=".MainActivity">

@@ -502,11 +502,13 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     }
 
                     mAdapter.setTransportData(mTransports);
+                    Log.d(TAG, "onChildAdded called");
                 }
 
                 //Called when the contents of an existing transport is changed
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Log.d(TAG, "onChildChanged called");
 
                     //Key of updated child in the Firebase
                     String key = dataSnapshot.getKey();

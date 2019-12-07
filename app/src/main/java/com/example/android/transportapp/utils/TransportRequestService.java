@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,6 +71,7 @@ public class TransportRequestService extends IntentService {
             //when any future children are added while the listener is attached
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d("IntentService", "onChildAdded called");
                 Transport transport = dataSnapshot.getValue(Transport.class);
                 mTransports.add(transport);
                 long index = 0;
@@ -120,7 +122,8 @@ public class TransportRequestService extends IntentService {
         String status = recentTransport.getStatus();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, TransportWidgetProvider.class));
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+                new ComponentName(this, TransportWidgetProvider.class));
         //Update all widgets
         TransportWidgetProvider.updateTransportWidgets(this,
                 appWidgetManager,
