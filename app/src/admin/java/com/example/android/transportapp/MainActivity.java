@@ -475,6 +475,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Add the Uid of each node in the dbase to the transportId child of the node
                     //This way we can get the ID in the ViewHolder and bind it to a TextView
                     if (dataSnapshot.getValue(Transport.class).getTransportId() == null) {
+                        Log.d(TAG, "getTransportId called");
                         mTransportsDatabaseReference
                                 .child(dataSnapshot.getKey())
                                 .child("transportId")
@@ -488,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     //Not sure why, but found this block was necessary to prevent a null pointer exception
                     if (transport.getTransportId() == null) {
+                        Log.d(TAG, "getTransportId in added called");
                         transport.setTransportId(dataSnapshot.getKey());
                     }
 
@@ -519,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         updatedTransport = iterator.next();
                         String id = updatedTransport.getTransportId();
+                        Log.d(TAG, "ID = " + id);
                         if (id.equals(key)) {
                             index = mTransports.indexOf(updatedTransport);
 

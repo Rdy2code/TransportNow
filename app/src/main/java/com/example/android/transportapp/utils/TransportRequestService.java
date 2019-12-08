@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.android.transportapp.Transport;
 import com.example.android.transportapp.TransportWidgetProvider;
@@ -50,6 +51,8 @@ public class TransportRequestService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_GET_LATEST_TRANSPORT.equals(action)) {
                 handleActionGetLatestTransport();
+            } else if (NotificationUtils.ACTION_DISMISS_NOTIFICATION.equals(action)) {
+                NotificationUtils.clearAllNotifications(this);
             }
         }
     }
@@ -93,7 +96,7 @@ public class TransportRequestService extends IntentService {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Log.d("IntentService", "onChildChanged called in intentservice");
             }
 
             @Override

@@ -3,9 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/widget_margin"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/colorPrimary">
 
@@ -16,21 +15,19 @@
         android:layout_weight="1"
         android:contentDescription="@string/app_icon_image"
         android:src="@drawable/launch_icon"
-        android:layout_margin="@dimen/widget_margin"
-        android:layout_gravity="start|center_vertical"
+        android:layout_marginLeft="@dimen/widget_margin"
         android:elevation="6dp"
-        android:background="@drawable/image_border"
-        android:padding="5dp"
-        android:cropToPadding="true">
+        android:scaleType="centerCrop"
+        >
     </ImageView>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:layout_gravity="start|center_vertical"
-        android:layout_marginEnd="@dimen/widget_margin">
+        android:padding="@dimen/widget_margin">
 
         <TextView
             android:id="@+id/appwidget_text_status"

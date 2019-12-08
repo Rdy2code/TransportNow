@@ -12,6 +12,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationBuilderWithBuilderAccessor;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.android.transportapp.MainActivity;
@@ -24,14 +25,17 @@ import com.example.android.transportapp.R;
 
 public class NotificationUtils {
 
-    private static final int TRANSPORT_NOTIFICATION_PENDING_INTENT_ID = 11;
+    private static final int TRANSPORT_NOTIFICATION_PENDING_INTENT_ID = 10;
     private static final String NOTIFICATION_CHANNEL_ID = "transport-notification-channel";
-    private static final int TRANSPORT_NOTIFICATION_ID = 23;
+    private static final int TRANSPORT_NOTIFICATION_ID = 11;
+    public static final String ACTION_DISMISS_NOTIFICATION = "dismiss-notification";
+    private static final int ACTION_DISMISS_NOTIFICATION_PENDING_INTENT_ID = 12;
 
     public static void notifyUserOfUpdate (Context context) {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        //Create channel
+
+        //Create channel and set to high to force peek-in function
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
@@ -40,6 +44,7 @@ public class NotificationUtils {
             notificationManager.createNotificationChannel(mChannel);
         }
 
+        //Build the notification
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
@@ -51,7 +56,8 @@ public class NotificationUtils {
                         "Help Needed: Modesto to Loomis."))
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent(context))
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .addAction(dismissNotificationAction(context));
 
         // If the build version is greater than or equal to JELLY_BEAN and less than OREO,
         // set the notification's priority to PRIORITY_HIGH.
@@ -74,10 +80,35 @@ public class NotificationUtils {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    private static PendingIntent dismissNotificationIntent (Context context) {
+        Intent dismissIntent = new Intent (context, TransportRequestService.class);
+        dismissIntent.setAction(ACTION_DISMISS_NOTIFICATION);
+        PendingIntent dismissPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_DISMISS_NOTIFICATION_PENDING_INTENT_ID,
+                dismissIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        return dismissPendingIntent;
+    }
+
+    private static NotificationCompat.Action dismissNotificationAction (Context context) {
+        NotificationCompat.Action ignoreNotificationAction = new NotificationCompat.Action(
+                R.drawable.ic_cancel,
+                context.getString(R.string.dismiss_notification),
+                dismissNotificationIntent(context));
+        return  ignoreNotificationAction;
+    }
+
+    //Create the bitmap image for the large icon that is displayed to the right of the content
     private static Bitmap largeIcon (Context context) {
         Resources res = context.getResources();
         Bitmap largeIcon = BitmapFactory.decodeResource(res, R.drawable.launch_icon);
         return largeIcon;
+    }
+
+    public static void clearAllNotifications (Context context) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancelAll();
     }
 
 }
