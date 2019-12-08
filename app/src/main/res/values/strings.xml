@@ -123,7 +123,7 @@
 
     <!--String resources for Utilities classes-->
     <string name="main_notification_channel">Primary</string>
-    <string name="notification_title">Transport Request - Update</string>
+    <string name="notification_title">Transport Request - New</string>
     <string name="dismiss_notification">Dismiss</string>
 
 

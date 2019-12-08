@@ -74,7 +74,6 @@ public class TransportRequestService extends IntentService {
             //when any future children are added while the listener is attached
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("IntentService", "onChildAdded called");
                 Transport transport = dataSnapshot.getValue(Transport.class);
                 mTransports.add(transport);
                 long index = 0;
@@ -96,7 +95,6 @@ public class TransportRequestService extends IntentService {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("IntentService", "onChildChanged called in intentservice");
             }
 
             @Override

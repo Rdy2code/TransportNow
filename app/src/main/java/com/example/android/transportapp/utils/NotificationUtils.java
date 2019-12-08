@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.android.transportapp.MainActivity;
 import com.example.android.transportapp.R;
+import com.example.android.transportapp.Transport;
 
 /**
  * Utility class for creating transport notifications whenever a new transport is added or an existing
@@ -31,7 +32,7 @@ public class NotificationUtils {
     public static final String ACTION_DISMISS_NOTIFICATION = "dismiss-notification";
     private static final int ACTION_DISMISS_NOTIFICATION_PENDING_INTENT_ID = 12;
 
-    public static void notifyUserOfUpdate (Context context) {
+    public static void notifyUserOfUpdate (Context context, Transport newTransport) {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -44,6 +45,12 @@ public class NotificationUtils {
             notificationManager.createNotificationChannel(mChannel);
         }
 
+        //Get values from Transport object that represents the latest transport
+        String dateNeededBy = newTransport.getDateNeededBy();
+        String originCity = newTransport.getOriginCity();
+        String destinationCity = newTransport.getDestinationCity();
+        String status = newTransport.getStatus();
+
         //Build the notification
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -51,13 +58,13 @@ public class NotificationUtils {
                 .setSmallIcon(R.drawable.ic_add_pet)
                 .setLargeIcon(largeIcon(context))
                 .setContentTitle(context.getString(R.string.notification_title))
-                .setContentText("Help Needed: Modesto to Loomis")
+                .setContentText(status + " - " + dateNeededBy)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(
-                        "Help Needed: Modesto to Loomis."))
+                        dateNeededBy + "\n" + originCity + " to " + destinationCity))
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent(context))
-                .setAutoCancel(true)
-                .addAction(dismissNotificationAction(context));
+                .addAction(dismissNotificationAction(context))
+                .setAutoCancel(true);
 
         // If the build version is greater than or equal to JELLY_BEAN and less than OREO,
         // set the notification's priority to PRIORITY_HIGH.
@@ -109,6 +116,10 @@ public class NotificationUtils {
     public static void clearAllNotifications (Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancelAll();
+    }
+
+    public static void setTransport (Context context, Transport newTransport) {
+        notifyUserOfUpdate (context, newTransport);
     }
 
 }

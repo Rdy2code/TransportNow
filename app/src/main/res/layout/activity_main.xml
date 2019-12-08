@@ -120,14 +120,4 @@
         app:pressedTranslationZ="@dimen/fab_press_translation_z"
         app:rippleColor="@color/colorPrimaryDark" />
 
-    <!--Button for testing purposes only: Notification test-->
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchorGravity="bottom|left|start"
-        app:layout_anchor="@id/recyclerview_transports"
-        android:onClick="testNotification"
-        android:text="Test Notification"/>
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

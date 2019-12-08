@@ -475,21 +475,24 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Add the Uid of each node in the dbase to the transportId child of the node
                     //This way we can get the ID in the ViewHolder and bind it to a TextView
                     if (dataSnapshot.getValue(Transport.class).getTransportId() == null) {
-                        Log.d(TAG, "getTransportId called");
+                        //This is a brand new transport since it doesn't yet have an ID assigned
+
+                        //Assign an ID in the Firebase Realtime Database
                         mTransportsDatabaseReference
                                 .child(dataSnapshot.getKey())
                                 .child("transportId")
                                 .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
+
+                        //Because this is new request, send a notification
+                        NotificationUtils.notifyUserOfUpdate(MainActivity.this,
+                                dataSnapshot.getValue(Transport.class) );
                     }
-
-
 
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
 
-                    //Not sure why, but found this block was necessary to prevent a null pointer exception
+                    //Assign the ID to the Transport Object field if it does not have one
                     if (transport.getTransportId() == null) {
-                        Log.d(TAG, "getTransportId in added called");
                         transport.setTransportId(dataSnapshot.getKey());
                     }
 
@@ -504,13 +507,11 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     }
 
                     mAdapter.setTransportData(mTransports);
-                    Log.d(TAG, "onChildAdded called");
                 }
 
                 //Called when the contents of an existing transport is changed
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildChanged called");
 
                     //Key of updated child in the Firebase
                     String key = dataSnapshot.getKey();
@@ -601,10 +602,5 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
             mTransportsDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
-    }
-
-    //For testing purposes only
-    public void testNotification (View view) {
-        NotificationUtils.notifyUserOfUpdate(this);
     }
 }
