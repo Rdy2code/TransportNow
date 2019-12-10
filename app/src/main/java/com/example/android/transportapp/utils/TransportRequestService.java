@@ -5,9 +5,11 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.android.transportapp.Transport;
 import com.example.android.transportapp.TransportWidgetProvider;
@@ -49,6 +51,8 @@ public class TransportRequestService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_GET_LATEST_TRANSPORT.equals(action)) {
                 handleActionGetLatestTransport();
+            } else if (NotificationUtils.ACTION_DISMISS_NOTIFICATION.equals(action)) {
+                NotificationUtils.clearAllNotifications(this);
             }
         }
     }
@@ -91,7 +95,6 @@ public class TransportRequestService extends IntentService {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
@@ -120,7 +123,8 @@ public class TransportRequestService extends IntentService {
         String status = recentTransport.getStatus();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, TransportWidgetProvider.class));
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+                new ComponentName(this, TransportWidgetProvider.class));
         //Update all widgets
         TransportWidgetProvider.updateTransportWidgets(this,
                 appWidgetManager,

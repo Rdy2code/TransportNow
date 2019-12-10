@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -54,9 +55,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
@@ -772,6 +773,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             //Uri of the photo we want to save
             mPhotoUri = data.getData();
             //Reference location of the photo we want to save
+
             mPhotoRef =
                     mTransportPhotosStorageReference.child(mPhotoUri.getLastPathSegment());
             //Upload the file to Firebase Storage and detect successful upload
@@ -799,7 +801,9 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         }
     }
 
-    //After many hours, found that Picasso could not load a Uri from Firebase, but Glide can.
+    //After many hours, found that Picasso could not load a Uri from Firebase,
+    // but Glide can. Photos should be less than 2Mb and preferably less than 1Mb
+    //to keep loading speeds efficient.
     private void loadPhoto (Uri photoUri) {
 
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);

@@ -119,4 +119,5 @@
         app:layout_anchorGravity="bottom|right|end"
         app:pressedTranslationZ="@dimen/fab_press_translation_z"
         app:rippleColor="@color/colorPrimaryDark" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

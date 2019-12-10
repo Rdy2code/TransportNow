@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.transportapp.utils.NotificationUtils;
 import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -474,18 +475,23 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Add the Uid of each node in the dbase to the transportId child of the node
                     //This way we can get the ID in the ViewHolder and bind it to a TextView
                     if (dataSnapshot.getValue(Transport.class).getTransportId() == null) {
+                        //This is a brand new transport since it doesn't yet have an ID assigned
+
+                        //Assign an ID in the Firebase Realtime Database
                         mTransportsDatabaseReference
                                 .child(dataSnapshot.getKey())
                                 .child("transportId")
                                 .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
+
+                        //Because this is new request, send a notification
+                        NotificationUtils.notifyUserOfUpdate(MainActivity.this,
+                                dataSnapshot.getValue(Transport.class) );
                     }
-
-
 
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
 
-                    //Not sure why, but found this block was necessary to prevent a null pointer exception
+                    //Assign the ID to the Transport Object field if it does not have one
                     if (transport.getTransportId() == null) {
                         transport.setTransportId(dataSnapshot.getKey());
                     }
@@ -516,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         updatedTransport = iterator.next();
                         String id = updatedTransport.getTransportId();
+                        Log.d(TAG, "ID = " + id);
                         if (id.equals(key)) {
                             index = mTransports.indexOf(updatedTransport);
 
