@@ -783,12 +783,13 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
 
-                //Not sure why, but the getBitmap method rotates the photo by 90 deg.
-                //This block rotates the bitmap back to its original orientation.
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                bitmap = Bitmap.createBitmap(
-                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+//                //Not sure why, but the getBitmap method sometimes rotates the photo by 90 deg.
+//                //This block rotates the bitmap back to its original orientation.
+                //TODO: May need to add conditional to check if photo is rotated before executing this block
+//                Matrix matrix = new Matrix();
+//                matrix.postRotate(-90);
+//                bitmap = Bitmap.createBitmap(
+//                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
             } catch (IOException e) {
                 e.printStackTrace();
