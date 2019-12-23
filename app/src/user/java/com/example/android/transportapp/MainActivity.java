@@ -332,11 +332,6 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
 
-                    //Not sure why, but found this block was necessary to prevent a null pointer exception
-                    if (transport.getTransportId() == null) {
-                        transport.setTransportId(dataSnapshot.getKey());
-                    }
-
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
                     mTransports.add(transport);
                     mOnChildAddedCount++;
