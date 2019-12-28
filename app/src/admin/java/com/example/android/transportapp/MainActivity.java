@@ -16,12 +16,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +41,7 @@ import com.example.android.transportapp.utils.NotificationUtils;
 import com.example.android.transportapp.utils.TransportRequestService;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
     //SwipeRefreshLayout
     private int mSwipedPosition;
+    private Transport mRecentlyDeletedItem;
 
     //RecyclerView member variables
     private TransportAdapter mAdapter;
@@ -249,11 +254,14 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 mSwipedPosition = viewHolder.getAdapterPosition();
 
                 //Get a reference to the deleted Transport object from the ArrayList of transports
-                Transport transportToDelete = mTransports.get(mSwipedPosition);
+                mRecentlyDeletedItem = mTransports.get(mSwipedPosition);
 
                 //Delete the transport from the Firebase
-                String path = transportToDelete.getTransportId();
+                String path = mRecentlyDeletedItem.getTransportId();
                 mTransportsDatabaseReference.child(path).removeValue();
+
+                //Show Snackbar asking if user would like to undo the delete
+                showUndoSnackbar();
             }
 
             @Override
@@ -295,6 +303,30 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(simpleTouchCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
+    //Display the Snackbar
+    private void showUndoSnackbar() {
+        View view = this.findViewById(R.id.coordinator_layout);
+        Snackbar snackbar = Snackbar.make(view, "Transport Deleted", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        final TextView tv = (TextView) snackbarView.findViewById(R.id.snackbar_text);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        tv.setTextColor(ContextCompat.getColor(this, R.color.snackbar_text_color));
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_trash_can, 0,0 , 0);
+        snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_background));
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                undoDelete();
+            }
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_text_color));
+        snackbar.show();
+    }
+
+    private void undoDelete() {
     }
 
     public static void setEditModeOn (boolean editMode) {
