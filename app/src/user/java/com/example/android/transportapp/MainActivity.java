@@ -357,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Loop through the ArrayList of transports to find the transport that must be updated
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         updatedTransport = iterator.next();
-                        String id = updatedTransport.getTransportId();
+                        String id = updatedTransport.getCurrentFirebaseKey();
                         if (id.equals(key)) {
                             index = mTransports.indexOf(updatedTransport);
                         }
@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         Transport transport = iterator.next();
-                        String id = transport.getTransportId();
+                        String id = transport.getCurrentFirebaseKey();
                         if (id.equals(key)) {
                             iterator.remove();
                         }

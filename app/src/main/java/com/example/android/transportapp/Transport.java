@@ -23,6 +23,9 @@ public class Transport implements Parcelable {
     private String note;
     private String weight;
     private String downloadPhotoUrl;
+    //Field stores most current key of the given object so that we can always link the object to its
+    //location in the Firebase Realtime Database
+    private String currentFirebaseKey;
 
     //HashMap for Timestamp
     HashMap<String, Object> timestamp;
@@ -44,7 +47,8 @@ public class Transport implements Parcelable {
                       String photoUrl,
                       String note,
                       String weight,
-                      String downloadPhotoUrl) {
+                      String downloadPhotoUrl,
+                      String currentKey) {
 
         //Initialize member variables to the values passed into the constructor
         this.status = status;
@@ -59,6 +63,7 @@ public class Transport implements Parcelable {
         this.note = note;
         this.weight = weight;
         this.downloadPhotoUrl = downloadPhotoUrl;
+        this.currentFirebaseKey = currentKey;
 
         HashMap<String, Object> timeStampCurrent = new HashMap<>();
         timeStampCurrent.put("timestamp", ServerValue.TIMESTAMP);
@@ -112,6 +117,10 @@ public class Transport implements Parcelable {
 
     public String getDownloadPhotoUrl() {
         return downloadPhotoUrl;
+    }
+
+    public String getCurrentFirebaseKey() {
+        return currentFirebaseKey;
     }
 
     //HashMap getter
@@ -173,6 +182,10 @@ public class Transport implements Parcelable {
         this.downloadPhotoUrl = downloadPhotoUrl;
     }
 
+    public void setCurrentFirebaseKey (String firebaseKey) {
+        this.currentFirebaseKey = firebaseKey;
+    }
+
     //Implement Parcelable methods:
     //Copy Transport object into a parcel for transmission from one activity to another
     @Override
@@ -195,6 +208,7 @@ public class Transport implements Parcelable {
         parcel.writeString(note);
         parcel.writeString(weight);
         parcel.writeString(downloadPhotoUrl);
+        parcel.writeString(currentFirebaseKey);
     }
 
     //Constructor for parcelable called by the receiving activity
@@ -211,6 +225,7 @@ public class Transport implements Parcelable {
         note = parcel.readString();
         weight = parcel.readString();
         downloadPhotoUrl = parcel.readString();
+        currentFirebaseKey = parcel.readString();
     }
 
     public static final Parcelable.Creator<Transport> CREATOR = new Parcelable.Creator<Transport>() {

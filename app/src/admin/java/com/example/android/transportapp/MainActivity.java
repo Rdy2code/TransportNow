@@ -257,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 mRecentlyDeletedItem = mTransports.get(mSwipedPosition);
 
                 //Delete the transport from the Firebase
-                String path = mRecentlyDeletedItem.getTransportId();
-                mTransportsDatabaseReference.child(path).removeValue();
+                String path = mRecentlyDeletedItem.getCurrentFirebaseKey();
+                mTransportsDatabaseReference.child(path).removeValue(); //Triggers call to onChildRemoved
 
                 //Show Snackbar asking if user would like to undo the delete
                 showUndoSnackbar();
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
         View view = this.findViewById(R.id.coordinator_layout);
         Snackbar snackbar = Snackbar.make(view, "Transport Deleted", Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        final TextView tv = (TextView) snackbarView.findViewById(R.id.snackbar_text);
+        TextView tv = (TextView) snackbarView.findViewById(R.id.snackbar_text);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         tv.setTextColor(ContextCompat.getColor(this, R.color.snackbar_text_color));
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -327,6 +327,8 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
     }
 
     private void undoDelete() {
+        //TODO: Add the recently deleted item back to Firebase
+        mTransportsDatabaseReference.push().setValue(mRecentlyDeletedItem);     //Triggers onChildAdded()
     }
 
     public static void setEditModeOn (boolean editMode) {
@@ -504,28 +506,17 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    //Add the Uid of each node in the dbase to the transportId child of the node
-                    //This way we can get the ID in the ViewHolder and bind it to a TextView
-                    if (dataSnapshot.getValue(Transport.class).getTransportId() == null) {
-                        //This is a brand new transport since it doesn't yet have an ID assigned
-
-                        //Assign an ID in the Firebase Realtime Database
-                        mTransportsDatabaseReference
-                                .child(dataSnapshot.getKey())
-                                .child("transportId")
-                                .setValue(dataSnapshot.getKey());       //Triggers a call to onChildChanged
-
-                        //Because this is new request, send a notification
-                        NotificationUtils.notifyUserOfUpdate(MainActivity.this,
-                                dataSnapshot.getValue(Transport.class) );
-                    }
-
                     //Deserialize the values for each item in the dbase and place them in a Transport object
                     Transport transport = dataSnapshot.getValue(Transport.class);
 
                     //Assign the ID to the Transport Object field if it does not have one
                     if (transport.getTransportId() == null) {
                         transport.setTransportId(dataSnapshot.getKey());
+                    }
+
+                    //Assign the Firebase Key as a value to matching field in object
+                    if (transport.getCurrentFirebaseKey() == null) {
+                        transport.setCurrentFirebaseKey(dataSnapshot.getKey());
                     }
 
                     //Add the transport object to the ArrayList of transports and attach the list to the adapter
@@ -539,6 +530,31 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     }
 
                     mAdapter.setTransportData(mTransports);
+
+                    //For new transports, add the TransportID to the Firebase
+                    //New transports don't yet have a TransportID
+                    if ((dataSnapshot.getValue(Transport.class).getTransportId() == null)) {
+
+                        mTransportsDatabaseReference.child(transport.getCurrentFirebaseKey())
+                                .setValue(transport);   //Triggers onChildChanged()
+
+                        //Because this is new request, send a notification
+                        NotificationUtils.notifyUserOfUpdate(MainActivity.this,
+                                dataSnapshot.getValue(Transport.class) );
+                    }
+
+
+                    //If currentFirebaseKey (CFK) is out of sync with the Firebase node,
+                    //this is a Transport that is getting re-added from "undo" swipe, so we need
+                    //to reset the CFK value
+                    if ((!dataSnapshot.getKey().equals(dataSnapshot.getValue(
+                            Transport.class).getCurrentFirebaseKey()))) {
+
+                        transport.setCurrentFirebaseKey(dataSnapshot.getKey());
+
+                        mTransportsDatabaseReference.child(transport.getCurrentFirebaseKey())
+                                .setValue(transport);  //Triggers onChildChanged
+                    }
                 }
 
                 //Called when the contents of an existing transport is changed
@@ -553,11 +569,9 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
                     //Loop through the ArrayList of transports to find the transport that must be updated
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         updatedTransport = iterator.next();
-                        String id = updatedTransport.getTransportId();
-                        Log.d(TAG, "ID = " + id);
+                        String id = updatedTransport.getCurrentFirebaseKey();
                         if (id.equals(key)) {
                             index = mTransports.indexOf(updatedTransport);
-
                         }
                     }
 
@@ -584,9 +598,10 @@ public class MainActivity extends AppCompatActivity implements TransportAdapter.
 
                     String key = dataSnapshot.getKey();
 
+                    //Find the transport that was removed in the ArrayList and then remove it
                     for (Iterator<Transport> iterator = mTransports.iterator(); iterator.hasNext();) {
                         Transport transport = iterator.next();
-                        String id = transport.getTransportId();
+                        String id = transport.getCurrentFirebaseKey();
                         if (id.equals(key)) {
                             iterator.remove();
                         }

@@ -538,7 +538,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     mPhotoUri.toString(),
                     note,
                     weight,
-                    mDownloadPhotoUri.toString()
+                    mDownloadPhotoUri.toString(),
+                    mTransport.getCurrentFirebaseKey()
             );
 
             if (fieldChecker(mPhotoUri.toString())) {
@@ -546,7 +547,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             } else {
                 //Set the mEditModeOn boolean to true in the MainActivity
                 MainActivity.setEditModeOn(true);
-                mTransportsDatabaseReference.child(mTransport.getTransportId()).setValue(transportObjectEditMode);
+                mTransportsDatabaseReference.child(mTransport.getCurrentFirebaseKey())
+                        .setValue(transportObjectEditMode);
                 finish();
             }
 
@@ -561,11 +563,12 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                     dateNeededBy,
                     name,
                     mGender,
-                    null,       //Leave as null here;ID is assigned in onChildAdded() in MainActivity
+                    null,       //Set as null, b/c ID is assigned in onChildAdded() in MainActivity
                     mPhotoUri.toString(),
                     note,
                     weight,
-                    mDownloadPhotoUri.toString()
+                    mDownloadPhotoUri.toString(),
+                    null        //Set to null, b/c ID is assigned in onChildAdded() in MA
             );
 
             //Since onChildChanged gets called when onChildAdded calls setValue() to update the
@@ -596,7 +599,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             //This code removes the node for this transport from the Firebase and triggers the
             //onChildRemoved callback in the Main Activity, where the list of transports is
             //updated
-            String pathToRemove = mTransport.getTransportId();
+            String pathToRemove = mTransport.getCurrentFirebaseKey();
             mTransportsDatabaseReference.child(pathToRemove).removeValue();
         }
         finish();
