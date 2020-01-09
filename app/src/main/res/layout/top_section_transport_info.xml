@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/button_elevation"
+        android:text="@string/button_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="@+id/textview_editor_status"
+        app:layout_constraintStart_toStartOf="@+id/textview_editor_status"
+        app:layout_constraintTop_toBottomOf="@+id/textview_editor_origin_destination" />
+
+    <TextView
+        android:id="@+id/textview_editor_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/placeholder_text_status_of_transport" />
+
+    <TextView
+        android:id="@+id/textview_editor_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="@+id/textview_editor_status"
+        app:layout_constraintStart_toStartOf="@+id/textview_editor_status"
+        app:layout_constraintTop_toBottomOf="@+id/textview_editor_status"
+        tools:text="@string/placeholder_text_date" />
+
+    <TextView
+        android:id="@+id/textview_editor_origin_destination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="@+id/textview_editor_status"
+        app:layout_constraintStart_toStartOf="@+id/textview_editor_status"
+        app:layout_constraintTop_toBottomOf="@+id/textview_editor_date"
+        tools:text="@string/placeholder_text_origin_to_destination" />
+
+    <TextView
+        android:id="@+id/textview_editor_copy_destination"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="4dp"
+        android:gravity="center"
+        android:text="@string/to_textview_button"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/icon_map"
+        app:layout_constraintTop_toTopOf="@+id/button" />
+
+    <ImageView
+        android:id="@+id/icon_map"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/icon_map"
+        android:contentDescription="@string/content_description_map_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_editor_status"
+        app:layout_constraintEnd_toStartOf="@+id/textview_editor_origin_destination"
+        app:layout_constraintTop_toTopOf="@+id/textview_editor_status" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
