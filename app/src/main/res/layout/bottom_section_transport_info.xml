@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/pet_name_label"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
         android:gravity="center_horizontal"
@@ -91,7 +91,7 @@
 
     <TextView
         android:id="@+id/textview_editor_name_field"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -100,12 +100,15 @@
         app:layout_constraintLeft_toLeftOf="@+id/table_body"
         app:layout_constraintStart_toStartOf="@+id/pet_name_label"
         app:layout_constraintTop_toTopOf="@+id/table_body"
-        tools:text="Toby" />
+        tools:text="Toby"
+        android:minLines="2"
+        android:maxWidth="70dp"
+        android:scrollHorizontally="false"/>
 
     <TextView
         android:id="@+id/textview_editor_gender_field"
-        android:layout_width="126dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@android:color/white"
@@ -116,8 +119,8 @@
 
     <TextView
         android:id="@+id/textview_editor_weight_field"
-        android:layout_width="126dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@android:color/white"
@@ -128,15 +131,18 @@
 
     <TextView
         android:id="@+id/textview_editor_transportId_field"
-        android:layout_width="126dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/transport_id_label"
         app:layout_constraintStart_toStartOf="@+id/transport_id_label"
         app:layout_constraintTop_toBottomOf="@+id/table_head"
-        tools:text="000000000000000" />
+        tools:text="000000000000000"
+        android:minLines="2"
+        android:maxWidth="70dp"
+        android:scrollHorizontally="false"/>
 
     <TextView
         android:id="@+id/textview_editor_notes_field"

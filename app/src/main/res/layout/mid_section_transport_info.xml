@@ -22,7 +22,6 @@
         android:id="@+id/icon_dog_tag"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/ic_dog_tag"
         android:contentDescription="@string/content_description_dog_license_icon"
