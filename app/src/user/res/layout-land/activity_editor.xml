@@ -28,7 +28,7 @@
             layout="@layout/mid_section_transport_info"
             android:layout_width="220dp"
             android:layout_height="156dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toEndOf="@+id/transport_info_main"
             app:layout_constraintTop_toTopOf="parent" />
