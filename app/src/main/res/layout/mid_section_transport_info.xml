@@ -11,9 +11,9 @@
         android:id="@+id/animal_photo"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="@string/content_description_animal_photograph"
+        android:contentDescription="Photo of animal"
         app:layout_constraintStart_toEndOf="@+id/icon_dog_tag"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars[0]" />
@@ -22,9 +22,10 @@
         android:id="@+id/icon_dog_tag"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/ic_dog_tag"
-        android:contentDescription="@string/content_description_dog_license_icon"
+        android:contentDescription="Icon image of a dog tag"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

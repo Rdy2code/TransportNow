@@ -13,12 +13,13 @@
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/colorPrimaryLight"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_editor_notes_field" />
 
     <ImageView
         android:id="@+id/table_body"
@@ -26,8 +27,9 @@
         android:layout_height="36dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@id/textview_editor_name_field"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/table_head"
@@ -151,12 +153,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/textColorPrimary"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon_notes"
-        app:layout_constraintTop_toBottomOf="@+id/table_body"
-        tools:text="@string/placeholder_text_notes_field" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="This is a sample note for the notes field." />
 
     <ImageView
         android:id="@+id/icon_notes"
@@ -164,7 +166,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/icon_notes"
-        android:contentDescription="@string/content_description_notes_icon"
+        android:contentDescription="Icon image that indicates start of notes field"
         app:layout_constraintBottom_toTopOf="@+id/textview_editor_notes_field"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview_editor_notes_field" />

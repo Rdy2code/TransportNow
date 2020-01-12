@@ -189,13 +189,13 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         mToTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClipboardManager clipboardManager;
-                clipboardManager = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData;
-
+                ClipboardManager clipboardManager =
+                        (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
                 String txtcopy = mDestinationCityTextView.getText().toString();
-                clipData = ClipData.newPlainText("text",txtcopy);
+                ClipData clipData = ClipData.newPlainText("text",txtcopy);
                 clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(EditorActivity.this,
+                        "Destination city copied to clip board", Toast.LENGTH_SHORT).show();
             }
         });
 

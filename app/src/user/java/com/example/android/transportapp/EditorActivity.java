@@ -1,53 +1,24 @@
 package com.example.android.transportapp;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
-import androidx.fragment.app.DialogFragment;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,6 +38,8 @@ public class EditorActivity extends AppCompatActivity {
     private String mTransportId;
     private String mNote;
     private String mStatus;
+
+    private Toast mToast;
 
     //Get references to the Text and Image views in the EditorActivity layout
     @BindView(R.id.textview_editor_status) TextView mStatusTextView;
@@ -176,13 +149,12 @@ public class EditorActivity extends AppCompatActivity {
         mCopyDestinationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClipboardManager clipboardManager;
-                clipboardManager = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData;
-
-                String txtcopy = mDestinationCity;
-                clipData = ClipData.newPlainText("text",txtcopy);
+                ClipboardManager clipboardManager =
+                        (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("text", mDestinationCity);
                 clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(EditorActivity.this,
+                        "Destination city copied to clip board", Toast.LENGTH_SHORT).show();
             }
         });
 
